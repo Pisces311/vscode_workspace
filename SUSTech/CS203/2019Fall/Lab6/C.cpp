@@ -2,20 +2,33 @@
 using namespace std;
 
 typedef long long ll;
-const int maxn = 2e5 + 5;
+const int maxn = 1e6 + 5;
 
-int n;
+int n, m, ans = 0;
 int nxt[maxn];
-char p[maxn];
+char s[maxn], p[maxn];
 
 void get_next(char *p) {
     nxt[0] = 0;
-    int plen = strlen(p);
-    for (int q = 1, k = 0; q < plen; ++q) {
+    for (int q = 1, k = 0; q < m; ++q) {
         while (k > 0 && p[q] != p[k]) k = nxt[k - 1];
         if (p[q] == p[k]) ++k;
         nxt[q] = k;
     }
+}
+
+int KMP(char *s, char *p) {
+    get_next(p);
+    int cnt = 0;
+    for (int i = 0, j = 0; i < n; ++i) {
+        while (j > 0 && p[j] != s[i]) j = nxt[j - 1];
+        if (p[j] == s[i]) ++j;
+        if (j == m) {
+            ++cnt;
+            j = 0;
+        }
+    }
+    return cnt;
 }
 
 int main() {
@@ -26,19 +39,9 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(0);
 
-    cin >> n;
-    while (n--) {
-        cin >> p;
-        int plen = strlen(p);
-        get_next(p);
-        if (!nxt[plen - 1])
-            cout << plen << '\n';
-        else if (plen % (plen - nxt[plen - 1])) {
-            cout << plen - nxt[plen - 1] - plen % (plen - nxt[plen - 1])
-                 << '\n';
-        } else
-            cout << "0\n";
-    }
+    cin >> n >> m;
+    cin >> s >> p;
+    cout << KMP(s, p) << '\n';
 
     return 0;
 }
