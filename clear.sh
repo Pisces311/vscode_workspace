@@ -1,0 +1,1 @@
+find . -name '*.tmp' -type f -print -exec rm -rf {} \;  
