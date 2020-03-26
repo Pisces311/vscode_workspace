@@ -4,6 +4,12 @@ using namespace std;
 using ll = long long;
 constexpr int maxn = 1e5 + 5;
 
+struct trick {
+    int a, b;
+};
+
+trick data[maxn];
+
 int main() {
 #ifdef DEBUG
     freopen("test.in", "r", stdin);
