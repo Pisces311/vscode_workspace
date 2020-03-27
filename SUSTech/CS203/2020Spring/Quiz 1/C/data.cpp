@@ -9,15 +9,15 @@ double rdouble(int a, int b) { return (b - a) * rand() / double(RAND_MAX) + a; }
 
 int main() {
 #ifdef DEBUG
-    freopen("./SUSTech/CS203/2020Spring/Quiz 1/C/Input/test1.in", "w", stdout);
+    freopen("./SUSTech/CS203/2020Spring/Quiz 1/C/Input/test5.in", "w", stdout);
 #endif
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
     srand(time(nullptr));
-    int n = 1e6, m = 1e6;
+    int n = 1e5, m = 1e5;
     cout << n << ' ' << m << '\n';
-    while (n--) cout << rint(0, 1e6) << ' ';
+    for (int i = 1; i <= n; ++i) cout << n - i + 1 << ' ';
     int sz = n;
     cout << '\n';
     while (m--) {

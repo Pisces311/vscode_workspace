@@ -1,4 +1,6 @@
-#include <bits/stdc++.h>
+#include <assert.h>
+
+#include <iostream>
 using namespace std;
 
 typedef long long ll;
@@ -11,17 +13,14 @@ bool check(int mid) {
 }
 
 int main() {
-#ifdef DEBUG
-    freopen("./SUSTech/CS203/2020Spring/Quiz 1/B/Input/test4.in", "r", stdin);
-    freopen("./SUSTech/CS203/2020Spring/Quiz 1/B/Output/test4.out", "w",
-            stdout);
-#endif
     ios::sync_with_stdio(false);
     cin.tie(0);
 
     cin >> T;
+    assert(T <= 1e4);
     while (T--) {
         cin >> f >> w >> s;
+        assert(f <= 1e8 && w <= 1e8 && s <= 1e8);
         int l = 0, r = 1e8, ans = 0;
         while (l <= r) {
             int mid = (l + r) >> 1;

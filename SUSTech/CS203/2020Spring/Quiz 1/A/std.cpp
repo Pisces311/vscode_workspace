@@ -4,18 +4,12 @@
 #include <iostream>
 using namespace std;
 
-using ll = long long;
 constexpr int maxn = 1e5 + 5;
 
 int T, n;
 int a[maxn];
 
 int main() {
-#ifdef DEBUG
-    freopen("./SUSTech/CS203/2020Spring/Quiz 1/A/Input/test6.in", "r", stdin);
-    freopen("./SUSTech/CS203/2020Spring/Quiz 1/A/Output/test6.out", "w",
-            stdout);
-#endif
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
