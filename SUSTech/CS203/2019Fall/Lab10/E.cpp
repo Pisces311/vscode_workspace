@@ -1,4 +1,5 @@
 #include <string.h>
+
 #include <iostream>
 #include <queue>
 #include <vector>
@@ -21,16 +22,10 @@ struct edge {
 
 int n, m, p, k, S, T;
 ll dis[maxn][12];
-bool vis[maxn][12];
 vector<edge> g[maxn];
 
-inline void init() {
-    memset(dis, inf, sizeof(dis));
-    memset(vis, false, sizeof(vis));
-}
-
 ll dijkstra(int s, int t, int k) {
-    init();
+    memset(dis, inf, sizeof(dis));
     priority_queue<node> q;
     dis[s][0] = 0;
     q.push({s, dis[s][0], 0});
@@ -39,16 +34,13 @@ ll dijkstra(int s, int t, int k) {
         q.pop();
         int u = tmp.v, cnt = tmp.cnt;
         if (u == t) return tmp.c;
-        if (vis[u][cnt]) continue;
-        vis[u][cnt] = true;
         for (edge i : g[u]) {
             int v = i.to, cost = i.cost;
-            if (cost && !vis[v][cnt] && dis[u][cnt] + cost < dis[v][cnt]) {
+            if (cost && dis[u][cnt] + cost < dis[v][cnt]) {
                 dis[v][cnt] = dis[u][cnt] + cost;
                 q.push({v, dis[v][cnt], cnt});
             }
-            if (!cost && cnt + 1 <= k && !vis[v][cnt + 1] &&
-                dis[u][cnt] < dis[v][cnt + 1]) {
+            if (!cost && cnt + 1 <= k && dis[u][cnt] < dis[v][cnt + 1]) {
                 dis[v][cnt + 1] = dis[u][cnt];
                 q.push({v, dis[v][cnt + 1], cnt + 1});
             }

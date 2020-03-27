@@ -1,7 +1,16 @@
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
+using ll = long long;
+constexpr int maxn = 1e5 + 5;
+
 int main() {
-    cout << 123 << '\n';
+#ifdef DEBUG
+    freopen("test.in", "r", stdin);
+    freopen("test.out", "w", stdout);
+#endif
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
     return 0;
 }

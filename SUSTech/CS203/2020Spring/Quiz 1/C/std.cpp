@@ -12,6 +12,11 @@ stack<int> stk;
 char op;
 
 int main() {
+#ifdef DEBUG
+    freopen("./SUSTech/CS203/2020Spring/Quiz 1/C/Input/test1.in", "r", stdin);
+    freopen("./SUSTech/CS203/2020Spring/Quiz 1/C/Output/test1.out", "w",
+            stdout);
+#endif
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
@@ -19,7 +24,10 @@ int main() {
     assert(n <= 1e5 && m <= 1e5);
     for (int i = 1; i <= n; ++i) {
         cin >> x;
-        stk.push(x);
+        if (i == 1)
+            stk.push(x);
+        else
+            stk.push(max(x, stk.top()));
     }
     for (int i = 1; i <= m; ++i) {
         cin >> op;
