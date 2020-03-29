@@ -25,9 +25,10 @@ int main() {
     }
     for (int i = 1; i <= m; ++i) {
         cin >> op;
-        if (op == 'P')
+        if (op == 'P') {
+            cin >> x;
             stk[++top] = x;
-        else if (op == 'R')
+        } else if (op == 'R')
             --top;
         else {
             int Max = 0;
