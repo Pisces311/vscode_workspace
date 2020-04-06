@@ -1,3 +1,7 @@
 .vscode/*
 clear.bat
-test.*
+test.in
+test.out
+test.py
+test.cpp
+
