@@ -68,5 +68,3 @@ int KM() {
         if (cx[i] != -1) ans += edge[i][cx[i]];
     return ans;
 }
-
-int main() { return 0; }

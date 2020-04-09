@@ -30,5 +30,3 @@ int KMP(char *s, char *p) {
     }
     return cnt;
 }
-
-int main() { return 0; }
