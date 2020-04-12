@@ -9,7 +9,7 @@ int q;
 vector<ll> fac;
 int C[60][60];
 
-void get(int n) {
+void get(ll n) {
     for (ll i = 2; i * i <= n; ++i) {
         if (n % i == 0) {
             fac.push_back(i);
