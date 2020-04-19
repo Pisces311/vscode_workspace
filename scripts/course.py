@@ -34,7 +34,7 @@ if __name__ == "__main__":
     )
     stu['username'] = input('Input student ID: ')
     stu_id = stu['username']
-    semester = '2019-2020-2'
+    semester = '2020-2021-1'
     weekcycle = '0'
     page = session.get(
         base_url +

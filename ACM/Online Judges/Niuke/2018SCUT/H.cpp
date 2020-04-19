@@ -37,9 +37,9 @@ int main() {
             for (int j = 1; j <= n; ++j) cin >> mat[i][j];
         ll inverse = inv(2);
         for (int i = 1; i <= n; ++i) {
-            for (int j = i + 1; j <= n; ++j) {
-                ans[i][j] = (mat[i][j] - mat[j][i] + mod) % mod * inverse % mod;
-                ans[j][i] = (-ans[i][j] + mod) % mod;
+            for (int j = 1; j <= n; ++j) {
+                ans[i][j] =
+                    ((mat[i][j] - mat[j][i]) * inverse % mod + mod) % mod;
             }
         }
         for (int i = 1; i <= n; ++i) {
