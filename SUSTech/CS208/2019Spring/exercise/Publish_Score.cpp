@@ -1,14 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define DEBUG
 typedef long long ll;
 typedef pair<int, int> pii;
-#define scan(a) scanf("%d", &a)
-#define print(a) printf("%d\n", a)
-#define mem(a, b) memset(a, b, sizeof(a))
-#define up(i, a, b) for (int i = a; i <= b; ++i)
-#define dn(i, a, b) for (int i = a; i >= b; --i)
 
 const int maxn = 1e5 + 5;
 
@@ -68,7 +62,7 @@ int main() {
     ios::sync_with_stdio(false);
 
     cin >> N;
-    up(i, 0, N - 1) cin >> a[i].l >> a[i].r;
+    for (int i = 0; i < N; ++i) cin >> a[i].l >> a[i].r;
     sort(a, a + N);
     int begin = 0, end = N - 1;
     cout << 1ll * N * (N - 1) / 2 - mergeSort(a, begin, end) << endl;
