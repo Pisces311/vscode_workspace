@@ -8,18 +8,7 @@ const int maxn = 1e5 + 5;
 
 struct node {
     int l, r;
-    bool operator<(const node& a) const {
-        if (l == a.l)
-            return r < a.r;
-        else
-            return l < a.l;
-    }
-    bool operator<=(const node& a) const {
-        if (l <= a.l && r <= a.r)
-            return true;
-        else
-            return false;
-    }
+    bool operator<(const node& a) const { return l == a.l ? r < a.r : l < a.l; }
 } a[maxn];
 
 int N;
@@ -31,7 +20,7 @@ int merge(node A[], int begin, int mid, int end) {
     int j = mid + 1;
     int k = 0;
     while (i <= mid && j <= end) {
-        if (A[i] <= A[j]) {
+        if (A[i].r <= A[j].r) {
             result[k++] = A[i++];
         } else {
             count += mid - i + 1;
