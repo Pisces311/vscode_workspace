@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-const int maxn = 1e4 + 5;
-const double eps = 1e-8;
+using ll = long long;
+constexpr int maxn = 1e4 + 5;
+constexpr double eps = 1e-8;
 
 // p[1]为最下方的点
 struct point {
@@ -16,6 +16,11 @@ struct vct {
 
 int n, top = 0;
 
+inline int sign(double a) { return a < -eps ? -1 : a > eps; }
+inline double dis(point p1, point p2) {
+    return hypot(p1.x - p2.x, p1.y - p2.y);
+}
+
 // 叉积 > 0: a在b顺时针方向
 // 叉积 == 0: a和b共线
 // 叉积 < 0: a在b逆时针方向
@@ -24,20 +29,19 @@ double cross_product(vct a, vct b) {
            (b.end.x - b.start.x) * (a.end.y - a.start.y);
 }
 
-double dis(point p1, point p2) { return hypot(p1.x - p2.x, p1.y - p2.y); }
-
 bool cmp(point p1, point p2) {
     double product = cross_product({p[1], p1}, {p[1], p2});
     return product == 0 ? dis(p[1], p1) < dis(p[1], p2) : product > 0;
 }
 
 void Graham() {
+    for (int i = 1; i <= n; ++i)
+        if (p[i].y < p[1].y) swap(p[1], p[i]);
     sort(p + 2, p + n + 1, cmp);
     conv[++top] = p[1];
     for (int i = 2; i <= n; ++i) {
-        while (top > 1 && cross_product({conv[top - 1], conv[top]},
-                                        {conv[top], p[i]}) <= 0)
-            --top;
+        vct v1 = {conv[top - 1], conv[top]}, v2 = {conv[top], p[i]};
+        while (top > 1 && sign(cross_product(v1, v2)) <= 0) --top;
         conv[++top] = p[i];
     }
     conv[++top] = p[1];
