@@ -3,21 +3,20 @@ using namespace std;
 
 typedef long long ll;
 const int maxn = 1e3 + 5;
-const int inf = 0x3f3f3f3f;
 const int mod = 1e9 + 7;
 
 struct Mat {
-    ll a[maxn][maxn];
-} ans, a;
-
-int n, m;
+    int row, col;
+    ll a[15][15];
+    Mat(int row, int col) : row(row), col(col) { memset(a, 0, sizeof(a)); }
+};
 
 Mat mul(const Mat& a, const Mat& b) {
-    Mat ans;
-    for (int i = 1; i <= m; ++i) {
-        for (int j = 1; j <= m; ++j) {
+    Mat ans(a.row, b.col);
+    for (int i = 1; i <= ans.row; ++i) {
+        for (int j = 1; j <= ans.col; ++j) {
             ans.a[i][j] = 0;
-            for (int k = 1; k <= m; ++k) {
+            for (int k = 1; k <= a.col; ++k) {
                 ans.a[i][j] += a.a[i][k] * b.a[k][j];
                 ans.a[i][j] %= mod;
             }
@@ -26,9 +25,9 @@ Mat mul(const Mat& a, const Mat& b) {
     return ans;
 }
 
-Mat quick_pow(Mat a, ll b) {
-    Mat t;
-    for (int i = 1; i <= m; ++i) t.a[i][i] = 1;
+Mat qpow(Mat a, ll b) {
+    Mat t(a.row, a.col);
+    for (int i = 1; i <= t.row; ++i) t.a[i][i] = 1;
     while (b) {
         if (b & 1) t = mul(t, a);
         b >>= 1;
@@ -36,5 +35,3 @@ Mat quick_pow(Mat a, ll b) {
     }
     return t;
 }
-
-int main() { return 0; }

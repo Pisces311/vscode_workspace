@@ -40,5 +40,3 @@ bool spfa() {
     }
     return false;
 }
-
-int main() { return 0; }

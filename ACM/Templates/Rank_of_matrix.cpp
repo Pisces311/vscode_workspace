@@ -39,5 +39,3 @@ int Rank(int n, int m) {
     }
     return s;
 }
-
-int main() { return 0; }
