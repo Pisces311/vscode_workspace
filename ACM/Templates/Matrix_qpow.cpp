@@ -28,7 +28,7 @@ Mat mul(const Mat& a, const Mat& b) {
 Mat qpow(Mat a, ll b) {
     Mat t(a.row, a.col);
     for (int i = 1; i <= t.row; ++i) t.a[i][i] = 1;
-    while (b) {
+    while (b > 0) {
         if (b & 1) t = mul(t, a);
         b >>= 1;
         a = mul(a, a);

@@ -3,8 +3,6 @@ using namespace std;
 
 typedef long long ll;
 typedef pair<int, int> pii;
-#define scan(a) scanf("%d", &a)
-#define print(a) printf("%d\n", a)
 #define mem(a, b) memset(a, b, sizeof(a))
 #define up(i, a, b) for (int i = a; i <= b; ++i)
 #define dn(i, a, b) for (int i = a; i >= b; --i)
@@ -16,7 +14,7 @@ int p1[maxn];
 
 void cal_1D() {
     int p, dis = INT_MAX;
-    up(i, 1, N) cin >> p1[i];
+    for (int i = 1; i <= N; ++i) cin >> p1[i];
     sort(p1 + 1, p1 + N + 1);
     up(i, 1, N - 1) {
         int dif = p1[i + 1] - p1[i];
@@ -69,9 +67,9 @@ ppair div2(int l, int r) {
 }
 
 void cal_2D() {
-    up(i, 1, N) cin >> p2[i].x >> p2[i].y;
+    for (int i = 1; i <= N; ++i) cin >> p2[i].x >> p2[i].y;
     sort(p2 + 1, p2 + N + 1);
-    up(i, 1, N) p2[i].in = i;
+    for (int i = 1; i <= N; ++i) p2[i].in = i;
     ppair ans = div2(1, N);
     p2[ans.f].show();
     p2[ans.s].show();
@@ -116,9 +114,9 @@ ppair div3(int l, int r) {
 }
 
 void cal_3D() {
-    up(i, 1, N) cin >> p3[i].x >> p3[i].y >> p3[i].z;
+    for (int i = 1; i <= N; ++i) cin >> p3[i].x >> p3[i].y >> p3[i].z;
     sort(p3 + 1, p3 + N + 1);
-    up(i, 1, N) p3[i].in = i;
+    for (int i = 1; i <= N; ++i) p3[i].in = i;
     ppair ans = div3(1, N);
     p3[ans.f].show();
     p3[ans.s].show();

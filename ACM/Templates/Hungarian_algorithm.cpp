@@ -38,5 +38,3 @@ int hungary() {
     }
     return sum;  //返回值为最大匹配的个数
 }
-
-int main() { return 0; }
