@@ -68,9 +68,7 @@ int main() {
         g[u].push_back({v, 0});
     }
     cin >> S >> T;
-    ll ans = inf;
-    for (int i = 0; i <= k; ++i) ans = min(ans, dijkstra(S, T, i));
-    cout << ans << '\n';
+    cout << dijkstra(S, T, k) << '\n';
 
     return 0;
 }
