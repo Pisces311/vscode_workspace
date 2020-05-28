@@ -28,5 +28,6 @@ inline void init() {
 
 inline ll C(ll n, ll k) {
     if (!k || n == k) return 1;
+    if (n < k) return 0;
     return fac[n] * facinv[k] % mod * facinv[n - k] % mod;
 }
