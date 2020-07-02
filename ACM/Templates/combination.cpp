@@ -5,7 +5,6 @@ using ll = long long;
 constexpr int maxn = 1e5 + 5;
 constexpr int mod = 998244353;
 
-int n;
 ll fac[maxn], facinv[maxn];
 
 ll qpow(ll a, ll b) {
@@ -19,7 +18,7 @@ ll qpow(ll a, ll b) {
     return ret;
 }
 
-inline void init() {
+inline void init(int n) {
     fac[1] = 1;
     for (int i = 2; i <= n; ++i) fac[i] = fac[i - 1] * i % mod;
     facinv[n] = qpow(fac[n], mod - 2);

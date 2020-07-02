@@ -1,16 +1,23 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-const int maxn = 1e6 + 5;
+using ll = long long;
+constexpr int maxn = 1e6 + 5;
 
 struct TrieTreeNode {
     int son[26], cnt, fail;
 } trie[maxn];
 
-int tot = 1;
+int T, n, m, tot;
 char s[maxn];
 queue<int> q;
+vector<string> evidence;
+
+inline void init() {
+    tot = 1;
+    evidence.clear();
+    memset(trie, 0, sizeof(trie));
+}
 
 void insert(char* s) {
     int u = 1, len = strlen(s);
@@ -42,17 +49,44 @@ void get_fail() {
     }
 }
 
-// 返回模式串在文本串中出现的次数
-int query(char* s) {
-    int u = 1, ans = 0, len = strlen(s);
-    for (int i = 0; i < len; ++i) {
-        int v = s[i] - 'a';
+int query(string& s) {
+    int u = 1, ans = 0;
+    for (char ch : s) {
+        int v = ch - 'a';
         int k = trie[u].son[v];
         while (k > 1 && trie[k].cnt != -1) {
-            ans += trie[k].cnt, trie[k].cnt = -1;
+            ans += trie[k].cnt;
             k = trie[k].fail;
         }
         u = trie[u].son[v];
     }
     return ans;
+}
+
+int main() {
+#ifdef DEBUG
+    freopen("test.in", "r", stdin);
+    freopen("test.out", "w", stdout);
+#endif
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> T;
+    while (T--) {
+        init();
+        cin >> n >> m;
+        for (int i = 1; i <= n; ++i) {
+            string str;
+            cin >> str;
+            evidence.push_back(str);
+        }
+        for (int i = 1; i <= m; ++i) {
+            cin >> s;
+            insert(s);
+        }
+        get_fail();
+        for (string i : evidence) cout << query(i) << '\n';
+    }
+
+    return 0;
 }
