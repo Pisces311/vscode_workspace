@@ -5,6 +5,7 @@ using ll = long long;
 constexpr int maxn = 1e5 + 5;
 
 int rint(int a, int b) { return (rand() % (b - a + 1)) + a; }
+ll rll(ll a, ll b) { return (rand() % (b - a + 1)) + a; }
 double rdouble(int a, int b) { return (b - a) * rand() / double(RAND_MAX) + a; }
 
 int main() {
@@ -15,13 +16,9 @@ int main() {
     cin.tie(nullptr);
 
     srand(time(nullptr));
-    int n = 400000;
-    cout << n << '\n';
-    for (int i = 1; i <= n; ++i) {
-        int num = rint(1, 1000000000);
-        cout << num << ' ';
-    }
-    cout << '\n';
+    int t = 1;
+    cout << t << '\n';
+    cout << rll(1e17, 1e18) << '\n';
 
     return 0;
 }

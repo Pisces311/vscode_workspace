@@ -7,7 +7,6 @@ constexpr int maxn = 1e5 + 5;
 int T;
 ll n;
 int prime[maxn], pnum = 0;  // 质数与质数个数
-int pf[maxn];               // 最小质因子
 bool not_prime[maxn];
 
 // 对1~n使用欧拉筛
@@ -15,12 +14,10 @@ void euler_sieve(int n) {
     for (int i = 2; i <= n; ++i) {
         if (!not_prime[i]) {
             prime[++pnum] = i;
-            pf[i] = i;
         }
         for (int j = 1; j <= pnum; ++j) {
             if (i * prime[j] > n) break;
             not_prime[i * prime[j]] = true;
-            pf[i * prime[j]] = prime[j];
             if (i % prime[j] == 0) break;
         }
     }
@@ -69,12 +66,12 @@ int solve() {
     int ans = deal(n);
     if (n == 1)
         return ans;
-    else if (solve2(n))
-        return min(ans, 2);
-    else if (solve3(n))
-        return min(ans, 3);
     else if (solve4(n))
         return min(ans, 4);
+    else if (solve3(n))
+        return min(ans, 3);
+    else if (solve2(n))
+        return min(ans, 2);
     else
         return 1;
 }
