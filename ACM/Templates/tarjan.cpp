@@ -46,9 +46,7 @@ void tarjan(int u) {
             stk.pop();
             in[t] = false;
             id[t] = scc;
-            num[scc]++;
+            ++num[scc];
         } while (t != u);
     }
 }
-
-int main() { return 0; }

@@ -2,7 +2,8 @@
 using namespace std;
 
 typedef long long ll;
-const int maxn = 1e3 + 5;
+constexpr int maxn = 1e3 + 5;
+constexpr int inf = 0x3f3f3f3f;
 
 struct node {
     int v, dis;
@@ -17,6 +18,7 @@ vector<node> g[maxn];
 */
 
 void dijkstra(int s) {
+    memset(dis, inf, sizeof(dis));
     priority_queue<node> pq;
     pq.push({s, 0});
     dis[s] = 0;

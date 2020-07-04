@@ -21,26 +21,21 @@ struct node2 {
     };
 };
 
-int N, M, A, B, tot, rtot, S, T, K;
+int tot, rtot;
 int head[maxn], rhead[maxn], h[maxn];
-bool vis[maxn];
 
 inline void init() {
     tot = rtot = -1;
     memset(head, -1, sizeof(head));
     memset(rhead, -1, sizeof(rhead));
-    memset(vis, false, sizeof(vis));
-    memset(h, inf, sizeof(inf));
+    memset(h, inf, sizeof(h));
 }
 
 inline void add_edge(int u, int v, int w) {
     edge[++tot] = {u, v, w, head[u]};
     head[u] = tot;
-}
-
-inline void add_redge(int u, int v, int w) {
-    redge[++rtot] = {u, v, w, rhead[u]};
-    rhead[u] = rtot;
+    redge[++rtot] = {v, u, w, rhead[v]};
+    rhead[v] = rtot;
 }
 
 void dijkstra(int S) {
@@ -50,20 +45,18 @@ void dijkstra(int S) {
     while (!pq.empty()) {
         node t = pq.top();
         pq.pop();
-        if (vis[t.v]) continue;
-        vis[t.v] = true;
-        for (int i = rhead[t.v]; i != -1; i = redge[i].next)
-            if (!vis[redge[i].v]) {
-                int v = redge[i].v;
-                if (h[v] > h[t.v] + redge[i].w) {
-                    h[v] = h[t.v] + redge[i].w;
-                    pq.push({v, h[v]});
-                }
+        for (int i = rhead[t.v]; i != -1; i = redge[i].next) {
+            int v = redge[i].v;
+            if (h[v] > h[t.v] + redge[i].w) {
+                h[v] = h[t.v] + redge[i].w;
+                pq.push({v, h[v]});
             }
+        }
     }
 }
 
 int A_star(int S, int T, int K) {
+    dijkstra(T);
     if (S == T) ++K;
     if (h[S] == inf) return -1;
     priority_queue<node2> q;
@@ -81,5 +74,3 @@ int A_star(int S, int T, int K) {
     }
     return -1;
 }
-
-int main() { return 0; }

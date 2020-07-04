@@ -1,22 +1,18 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-const int maxn = 1e5 + 5;
-const int maxm = 2e5 + 5;
-const int inf = 0x3f3f3f3f;
+using ll = long long;
+constexpr int maxn = 1e3 + 5;
+constexpr int maxm = 1e4 + 5;
+constexpr int inf = 0x3f3f3f3f;
 
 struct Edge {
     int u, v, w;
 } edge[maxm];
 
-int N, M;
-
+int T, N, M;
 int in[maxn], pre[maxn], id[maxn], vis[maxn];
 
-// 朱刘算法会打乱节点序号
-// in[]：记录每个点的入边权值（求最小入边），cnt：记录（非法）树中环的个数。
-// pre[]：记录前驱点，vis[]：记录本次搜索中节点属于哪一个环
 int zhuliu(int rt, int N, int M) {
     int ans = 0;
     while (true) {
@@ -61,4 +57,29 @@ int zhuliu(int rt, int N, int M) {
         rt = id[rt];
     }
     return ans;
+}
+
+int main() {
+#ifdef DEBUG
+    freopen("test.in", "r", stdin);
+    freopen("test.out", "w", stdout);
+#endif
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> T;
+    while (T--) {
+        cin >> N >> M;
+        for (int i = 1; i <= M; i++) {
+            int u, v, w;
+            cin >> u >> v >> w;
+            w *= -1000;
+            if (v == N) w -= (N - u);
+            edge[i] = {u, v, w};
+        }
+        int ans = zhuliu(1, N, M);
+        cout << -ans / 1000 << ' ' << N - (-ans) % 1000 << '\n';
+    }
+
+    return 0;
 }
