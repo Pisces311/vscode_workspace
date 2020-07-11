@@ -2,8 +2,8 @@
 using namespace std;
 
 typedef long long ll;
-const int maxn = 1e5 + 5;
-const ll mod = 1e9 + 7;
+constexpr int maxn = 1e5 + 5;
+constexpr int mod = 1e9 + 7;
 
 ll qpow(ll a, ll b) {
     ll ret = 1;
