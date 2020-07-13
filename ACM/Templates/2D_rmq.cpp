@@ -4,11 +4,10 @@ using namespace std;
 using ll = long long;
 constexpr int maxn = 3e2 + 5;
 
-int n, m;
 int val[301][301];
 int Max[maxn][maxn][9][9], Min[maxn][maxn][9][9];
 
-void init() {
+void init(int n, int m) {
     for (int row = 1; row <= n; row++)
         for (int col = 1; col <= m; col++)
             Min[row][col][0][0] = Max[row][col][0][0] = val[row][col];
