@@ -51,5 +51,3 @@ inline void outint(ll a) {
 }
 }  // namespace IO
 using namespace IO;
-
-int main() { return 0; }
