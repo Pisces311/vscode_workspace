@@ -9,7 +9,7 @@ const int inf = 0x3f3f3f3f;
 //如p是一个奇素数，则p的原根个数为f(p-1).
 
 //单个欧拉函数
-int eular(int n) {
+int euler(int n) {
     int ret = 1;
     for (int i = 2; i * i <= n; i++)
         if (n % i == 0) {
