@@ -4,7 +4,7 @@ using namespace std;
 typedef long long ll;
 const int maxn = 1e5 + 5;
 
-int N, M, K, block, res;
+int N, M, block, res;
 int a[maxn], ans[maxn], sum[maxn];
 
 struct query {
@@ -27,7 +27,7 @@ inline void del(int x) {
 //若N和M同阶，则可直接取block=sqrt(N). 如果M特别大，则取block=N/sqrt(M).
 //虽然实际上block=N/sqrt(M*2/3)可能会更快。
 int main() {
-    cin >> N >> M >> K;
+    cin >> N >> M;
     for (int i = 1; i <= N; ++i) cin >> a[i];
     block = sqrt(N);
     for (int i = 1; i <= M; ++i) {
