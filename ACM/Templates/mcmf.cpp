@@ -1,10 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-const int maxn = 1e3;
-const int maxm = 1e4;
-const int inf = 0x3f3f3f3f;
+using ll = long long;
+constexpr int maxn = 1e3;
+constexpr int maxm = 1e4;
+constexpr int inf = 0x3f3f3f3f;
 
 struct edge {
     int v, w, cost, next;

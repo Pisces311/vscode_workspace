@@ -41,5 +41,3 @@ void update(int o, int l, int r, int p, int val) {
     update(o << 1 | 1, mid + 1, r, p, val);
     pushUp(o, l, r);
 }
-
-int main() { return 0; }
