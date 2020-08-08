@@ -3,3 +3,6 @@ clear.*
 test.*
 *.go
 *.csv
+*.in
+*.out
+*.txt
