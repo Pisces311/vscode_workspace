@@ -2,11 +2,24 @@
 using namespace std;
 
 using ll = long long;
-constexpr int maxn = 1e4 + 5;
-constexpr int inf = 0x3f3f3f3f;
+constexpr int maxn = 1e5 + 5;
+constexpr ll mod = 998244353;
 
-int t, n, m;
-int x[maxn], y[maxn];
+int T;
+ll m, p, q;
+
+ll qpow(ll a, ll b) {
+    ll ret = 1;
+    a %= mod;
+    while (b > 0) {
+        if (b & 1) ret = (ret * a) % mod;
+        b /= 2;
+        a = (a * a) % mod;
+    }
+    return ret;
+}
+
+ll inv(ll x) { return qpow(x, mod - 2); }
 
 int main() {
 #ifdef DEBUG
@@ -16,15 +29,13 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    cin >> t;
-    while (t--) {
-        cin >> n >> m;
-        for (int i = 1; i <= n; ++i) cin >> x[i] >> y[i];
-        int ans = inf;
-        for (int i = 1; i <= n; ++i) {
-            int cur = ceil(1.0 * m / x[i]);
-            ans = min(ans, cur * y[i]);
-        }
+    cin >> T;
+    while (T--) {
+        cin >> m >> p >> q;
+        ll phit = p * inv(100) % mod, qhit = q * inv(100) % mod;
+        ll add = m * inv(phit) % mod;
+        ll sub = (add - 1 + mod) % mod * qhit % mod;
+        ll ans = (m - sub + mod) % mod;
         cout << ans << '\n';
     }
 

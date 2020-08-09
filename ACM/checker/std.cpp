@@ -1,178 +1,57 @@
 #include <bits/stdc++.h>
-
+#define ll long long
+#define ull unsigned ll
+#define uint unsigned
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define IT iterator
+#define PB push_back
+#define MK make_pair
+#define fi first
+#define se second
+#define For(i, j, k) for (int i = (int)(j); i <= (int)(k); i++)
+#define Rep(i, j, k) for (int i = (int)(j); i >= (int)(k); i--)
+#define CLR(a, v) memset(a, v, sizeof(a));
+#define CPY(a, b) memcpy(a, b, sizeof(a));
+#define debug puts("wzpakking")
+#define y1 ysghysgsygsh
+#define all(v) v.begin(), v.end()
 using namespace std;
-
-#define IOO ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0)
-#define endl '\n'
-
-typedef long long ll;
-
-const int N = 1e6 + 10;
-int prime[N];
-inline void getPrime() {
-	for (int i = 2; i < N; i++) {
-		if (! prime[i]) prime[++prime[0]] = i;
-		for (ll j = 1, k; j <= prime[0] && (k = 1ll * prime[j] * i) < 1ll * N; j++) {
-			prime[k] = 1;
-			if (i % prime[j] == 0) break;
-		}
-	}
-}
-
-const int S = 8;
-
-ll quick_mul(ll a, ll b, ll c) {
-	a %= c;
-	b %= c;
-	ll ret = 0, tmp = a;
-	while (b) {
-		if (b & 1) {
-			ret += tmp;
-			if (ret > c) ret -= c;
-		}
-		tmp <<= 1;
-		if (tmp > c) tmp -= c;
-		b >>= 1;
-	}
-	return ret;
-}
-
-ll quick_power(ll a, ll b, ll p) {
-	ll x = 1;
-	while (b) {
-		if (b & 1) x = quick_mul(x, a, p);
-		b >>= 1;
-		a = quick_mul(a, a, p);
-	}
-	return x;
-}
-
-bool check(ll a, ll n, ll x, ll t) {
-	ll ret = quick_power(a, x, n);
-	ll last = ret;
-	for (int i = 1; i <= t; i++) {
-		ret = quick_mul(ret, ret, n);
-		if (ret == 1 && last != 1 && last != n - 1) return 1;
-		last = ret;
-	}
-	if (ret != 1) return 1;
-	return 0;
-}
-
-bool Miller_Rabin(ll n) {
-	if (n < 2) return 0;
-	if (n == 2) return 1;
-	if ((n & 1) == 0) return 0;
-	ll x = n - 1;
-	ll t = 0;
-	while ((x & 1) == 0) {
-		x >>= 1;
-		t++;
-	}
-	srand(time(NULL));
-	for (int i = 0; i < S; i++) {
-		ll a = rand() % (n - 1) + 1;
-		if (check(a, n, x, t)) return 0;
-	}
-	return 1;
-}
-
-ll gcd(ll a, ll b) {
-	ll t;
-	while (b) {
-		t = a;
-		a = b;
-		b = t % b;
-	}
-	if (a >= 0) return a;
-	else return -a;
-}
-
-ll pollard_rho(ll x, ll c) {
-	ll i = 1, k = 2;
-	srand(time(NULL));
-	ll x0 = rand() % (x - 1) + 1;
-	ll y = x0;
-	while (1) {
-		i++;
-		x0 = (quick_mul(x0, x0, x) + c) % x;
-		ll d = gcd(y - x0, x);
-		if (d != 1 && d != x) return d;
-		if (y == x0) return x;
-		if (i == k) {
-			y = x0;
-			k += k;
-		}
-	}
-}
-
-ll factor[200];
-int fcnt;
-
-void findfactors(ll n, int k) {
-	if (n == 1) return;
-	if (Miller_Rabin(n)) {
-		factor[++fcnt] = n;
-		return;
-	}
-	ll p = n;
-	int c = k;
-	while (p >= n) p = pollard_rho(p, c--);
-	findfactors(p, k);
-	findfactors(n / p, k);
-}
-
-int T, ans;
-ll n;
-
-const double eps = 1e-6;
-
-double cuberoot(double n) {
-	double x = 1;
-	while (1) {
-		double nx = (x * 2.0 + n / x / x) / 3.0;
-		if (fabs(x - nx) < eps) break;
-		x = nx;
-	}
-	return x;
-}
-
+const int maxn = 1e5 + 10;
+int v1[maxn], v2[maxn];
+char s1[maxn], s2[maxn];
 int main() {
-	IOO;
-	getPrime();
-	for (cin >> T; T; T--) {
-		cin >> n;
-		if (n == 1) {
-			cout << 0 << endl;
-			continue;
-		}
-		ans = N;
-		for (int i = 1; i <= 1300; i++) {
-			if (n % prime[i] == 0) {
-				int temp = 0;
-				while (n % prime[i] == 0) {
-					n /= prime[i];
-					temp++;
-				}
-				ans = min(ans, temp);
-			}
-		}
-		if (n == 1 || ans == 1) {
-			cout << ans << endl;
-			continue;
-		}
-		ll r4 = (ll) sqrt(sqrt(n));
-		if (r4 * r4 * r4 * r4 == n) ans = min(ans, 4);
-		else {
-			ll r2 = (ll) sqrt(n);
-			if (r2 * r2 == n) ans = min(ans, 2);
-			else {
-				ll r3 = (ll) cuberoot(n);
-				if (r3 * r3 * r3 == n) ans = min(ans, 3);
-				else ans = 1;
-			}
-		}
-		cout << ans << endl;
-	}
-	return 0;
+#ifdef DEBUG
+    freopen("test.in", "r", stdin);
+    freopen("test.out", "w", stdout);
+#endif
+    int T, n;
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d", &n);
+        scanf("%s%s", s1 + 1, s2 + 1);
+        CLR(v1, 0);
+        CLR(v2, 0);
+        For(i, 1, n) {
+            if (s1[i] != s2[i]) v1[i] = 1;
+            if (s2[i] != '0') v2[i]++;
+            v1[i] += v1[i - 1];
+            v2[i] += v2[i - 1];
+        }
+        s1[n + 1] = s2[n + 1] = '0';
+        v1[n + 1] = v1[n + 2] = v1[n];
+        v2[n + 1] = v2[n + 2] = v2[n];
+        int ans = v1[n];
+        int cnt = 0;
+        For(i, 1, n + 1) {
+            int res = v1[n + 2] - v1[i] + v2[i - 1] + ('1' - s2[i]) + cnt + 1;
+            // printf("res=%d\n",res);
+            if (s1[i] == '1')
+                res++;
+            else
+                cnt++;
+            ans = min(ans, res);
+        }
+        printf("%d\n", ans);
+    }
 }

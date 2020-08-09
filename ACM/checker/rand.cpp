@@ -16,9 +16,16 @@ int main() {
     cin.tie(nullptr);
 
     srand(time(nullptr));
-    int t = 1;
+    int t = 10;
     cout << t << '\n';
-    cout << rll(1e17, 1e18) << '\n';
+    while (t--) {
+        int n = rint(1, 10);
+        cout << n << '\n';
+        for (int i = 1; i <= n; ++i) cout << (char)(rint(0, 1) + '0');
+        cout << '\n';
+        for (int i = 1; i <= n; ++i) cout << (char)(rint(0, 1) + '0');
+        cout << '\n';
+    }
 
     return 0;
 }

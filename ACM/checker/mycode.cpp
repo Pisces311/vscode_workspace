@@ -2,81 +2,16 @@
 using namespace std;
 
 using ll = long long;
-constexpr int maxn = 1e5 + 5;
+constexpr int maxn = 1e5 + 10;
 
-int T;
-ll n;
-int prime[maxn], pnum = 0;  // 质数与质数个数
-int pf[maxn];               // 最小质因子
-bool not_prime[maxn];
+int T, n;
+char s[maxn], t[maxn];
+int scnt[maxn], tcnt[maxn], dif[maxn];
 
-// 对1~n使用欧拉筛
-void euler_sieve(int n) {
-    for (int i = 2; i <= n; ++i) {
-        if (!not_prime[i]) {
-            prime[++pnum] = i;
-            pf[i] = i;
-        }
-        for (int j = 1; j <= pnum; ++j) {
-            if (i * prime[j] > n) break;
-            not_prime[i * prime[j]] = true;
-            pf[i * prime[j]] = prime[j];
-            if (i % prime[j] == 0) break;
-        }
-    }
-}
-
-int deal(ll &x) {
-    int ret = INT_MAX;
-    for (int i = 1; i <= pnum; ++i) {
-        if (x % prime[i] == 0) {
-            int cnt = 0;
-            while (x % prime[i] == 0) {
-                x /= prime[i];
-                ++cnt;
-            }
-            ret = min(ret, cnt);
-        }
-    }
-    return ret;
-}
-
-bool solve2(ll x) {
-    ll r = sqrt(x) + 0.5;
-    if (r * r == x)
-        return true;
-    else
-        return false;
-}
-
-bool solve3(ll x) {
-    ll r = pow(x, 1.0 / 3) + 0.5;
-    if (r * r * r == x)
-        return true;
-    else
-        return false;
-}
-
-bool solve4(ll x) {
-    ll r = pow(x, 1.0 / 4) + 0.5;
-    if (r * r * r * r == x)
-        return true;
-    else
-        return false;
-}
-
-int solve() {
-    int ans = deal(n);
-    if (n == 1)
-        return ans;
-    else if (solve2(n))
-        return min(ans, 2);
-    else if (solve3(n))
-        return min(ans, 3);
-    else if (solve4(n))
-        return min(ans, 4);
-    else
-        return 1;
+inline void init(int n) {
+    memset(scnt, 0, sizeof(int) * (n + 5));
+    memset(tcnt, 0, sizeof(int) * (n + 5));
+    memset(dif, 0, sizeof(int) * (n + 5));
 }
 
 int main() {
@@ -87,12 +22,52 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    euler_sieve(1e4);
     cin >> T;
     while (T--) {
-        cin >> n;
-        cout << solve() << '\n';
+        cin >> n >> (s + 1) >> (t + 1);
+        s[n + 1] = t[n + 1] = '0';
+        init(n);
+        for (int i = 1; i <= n; ++i) {
+            scnt[i] = scnt[i - 1];
+            tcnt[i] = tcnt[i - 1];
+            if (s[i] == '1') ++scnt[i];
+            if (t[i] == '1') ++tcnt[i];
+        }
+        for (int i = n; i >= 1; --i) {
+            dif[i] = dif[i + 1];
+            if (s[i] != t[i]) ++dif[i];
+        }
+        int ans = dif[1];
+        for (int i = 1; i <= n; ++i) {
+            int cur = dif[i + 1];
+            if (s[i] == '1') ++cur;
+            cur += i - 1 - scnt[i - 1];
+            cur += 1;
+            cur += tcnt[i - 1];
+            ans = min(ans, cur);
+        }
+        cout << ans << '\n';
     }
 
     return 0;
 }
+/*
+9
+011111011
+110000100
+*/
+
+
+
+/*
+5
+6
+1
+4
+2
+3
+5
+0
+1
+0
+*/
