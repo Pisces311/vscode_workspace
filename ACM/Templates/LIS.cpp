@@ -7,7 +7,7 @@ constexpr int maxn = 1e5 + 5;
 int n;
 int a[maxn], stk[maxn];
 
-int solve(int l, int r) {
+int lis(int l, int r) {
     int top = 0;
     for (int i = l; i <= r; ++i) {
         if (!top || a[i] > stk[top])
