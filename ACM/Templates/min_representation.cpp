@@ -19,5 +19,5 @@ int find() {
             k = 0;
         }
     }
-    return min(i, j)
+    return min(i, j);
 }
