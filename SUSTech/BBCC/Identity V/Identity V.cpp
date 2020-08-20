@@ -9,8 +9,8 @@ int a[5];
 
 int main() {
 #ifdef DEBUG
-    freopen("SUSTech/BBCC/Identity V/Input/6.in", "r", stdin);
-    freopen("SUSTech/BBCC/Identity V/Output/6.out", "w", stdout);
+    freopen("SUSTech/BBCC/Identity V/Input/2.in", "r", stdin);
+    freopen("SUSTech/BBCC/Identity V/Output/2.out", "w", stdout);
 #endif
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
