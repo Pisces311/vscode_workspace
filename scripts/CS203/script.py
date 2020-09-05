@@ -1,12 +1,12 @@
 import xlrd
 from selenium import webdriver
 
-path = 'C:/Users/Hello/Desktop/Student_number.xlsx'
+path = 'C:/Users/Hello/Desktop/ids.xlsx'
 
 
 def get_student_list(loc: str) -> list:
     raw_data = xlrd.open_workbook(loc).sheets()[0]
-    data = [str(int(i)) for i in raw_data.col_values(0)[2:]]
+    data = [str(int(i)) for i in raw_data.col_values(0)]
     return data
 
 

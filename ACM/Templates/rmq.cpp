@@ -4,11 +4,10 @@ using namespace std;
 typedef long long ll;
 const int maxn = 1e5 + 5;
 
-int n;
 int a[maxn];
 int Min[maxn][20], Max[maxn][20];
 
-void init() {
+void init(int n) {
     for (int i = 1; i <= n; ++i) Min[i][0] = Max[i][0] = a[i];
     for (int i = 1; (1 << i) <= n; ++i) {
         for (int j = 1; j + (1 << i) - 1 <= n; ++j) {
