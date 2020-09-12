@@ -13,6 +13,7 @@ int cx[maxn], cy[maxn];  //存储左图和右图的连边对象
 int edge[maxn][maxn];    // 邻接矩阵
 
 int dfs(int u) {
+    // vis[u] = true
     for (int v : y) {
         if (edge[u][v] && !vis[v]) {
             vis[v] = true;
