@@ -6,7 +6,8 @@ constexpr int maxn = 1e6 + 5;
 
 char s[maxn];
 char s_new[maxn << 1];
-int p[maxn << 1]; // 以p[i]为中心的新串最长回文半径，包含自己。p[i]-1即为原串回文长度。
+// 以p[i]为中心的新串最长回文半径，包含自己。p[i]-1即为原串回文长度。
+int p[maxn << 1];
 
 void init() {
     int len = strlen(s);
