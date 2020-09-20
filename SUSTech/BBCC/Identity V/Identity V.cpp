@@ -1,17 +1,13 @@
-#include <bits/stdc++.h>
-using namespace std;
+#include <string.h>
 
-using ll = long long;
-constexpr int maxn = 1e5 + 5;
+#include <iostream>
+#include <numeric>
+using namespace std;
 
 int T, n;
 int a[5];
 
 int main() {
-#ifdef DEBUG
-    freopen("SUSTech/BBCC/Identity V/Input/2.in", "r", stdin);
-    freopen("SUSTech/BBCC/Identity V/Output/2.out", "w", stdout);
-#endif
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
