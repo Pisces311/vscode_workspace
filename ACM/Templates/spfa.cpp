@@ -8,20 +8,15 @@ struct node {
     int id, w;
 };
 
-int n;
+int N;
 vector<node> g[maxn];
 bool in[maxn];  // 标记是否在队列中
 int dis[maxn], cnt[maxn];
 
-/*
-spfa用于处理有负权边的最短路问题或判断是否有负权环。
-一般最短路图老老实实用dijkstra.
-*/
-
 bool spfa(int S) {
-    memset(dis, inf, sizeof(dis));
-    memset(cnt, 0, sizeof(cnt));
-    memset(in, false, sizeof(in));
+    fill(dis, dis + N + 1, inf);
+    fill(cnt, cnt + N + 1, 0);
+    fill(in, in + N + 1, false);
     queue<int> q;
     dis[S] = 0;
     q.push(S);
