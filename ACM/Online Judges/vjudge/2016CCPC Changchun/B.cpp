@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+constexpr int maxn = 1e1 + 5;
+
 int gcd(int a, int b) { return b ? gcd(b, a % b) : a; }
 
 int lcm(int a, int b) { return a / gcd(a, b) * b; }
@@ -47,3 +49,32 @@ struct fraction {
         return out;
     }
 };
+
+int n;
+int a[maxn], b[maxn];
+
+int main() {
+#ifdef DEBUG
+    freopen("test.in", "r", stdin);
+    freopen("test.out", "w", stdout);
+#endif
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    for (int cas = 1; cas <= T; ++cas) {
+        cin >> n;
+        for (int i = 1; i <= n; ++i) cin >> a[i];
+        for (int i = 1; i <= n; ++i) cin >> b[i];
+        fraction ans = {b[n], a[n]};
+        for (int i = n - 1; i >= 1; --i) {
+            ans = ans + a[i];
+            ans = {b[i] * ans.b, ans.a};
+        }
+        ans.reduce();
+        cout << "Case #" << cas << ": " << ans.a << ' ' << ans.b << '\n';
+    }
+
+    return 0;
+}
