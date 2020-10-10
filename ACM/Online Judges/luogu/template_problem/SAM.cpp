@@ -32,7 +32,6 @@ struct SAM {
                 int clone = ++sz;
                 node[clone] = node[q];
                 node[clone].maxlen = node[p].maxlen + 1;
-                node[clone].fa = node[q].fa;
                 node[clone].cnt = 0;
                 for (; p && node[p].trans[id] == q; p = node[p].fa)
                     node[p].trans[id] = clone;

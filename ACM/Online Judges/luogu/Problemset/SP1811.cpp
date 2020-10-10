@@ -2,7 +2,7 @@
 using namespace std;
 
 using ll = long long;
-constexpr int maxn = 1e6 + 5;
+constexpr int maxn = 25e4 + 5;
 
 struct Node {
     int maxlen, fail;
@@ -39,3 +39,45 @@ struct SAM {
         last = cur;
     }
 } sam;
+
+int slen, tlen;
+char s[maxn], t[maxn];
+
+int cal() {
+    int ans = 0, p = 1, l = 0;
+    for (int i = 0; i < tlen; ++i) {
+        int id = t[i] - 'a';
+        if (sam.node[p].trans[id]) {
+            p = sam.node[p].trans[id];
+            ++l;
+        } else {
+            for (; p && !sam.node[p].trans[id]; p = sam.node[p].fail)
+                ;
+            if (!p) {
+                l = 0;
+                p = 1;
+            } else {
+                l = sam.node[p].maxlen + 1;
+                p = sam.node[p].trans[id];
+            }
+        }
+        ans = max(ans, l);
+    }
+    return ans;
+}
+
+int main() {
+#ifdef DEBUG
+    freopen("test.in", "r", stdin);
+    freopen("test.out", "w", stdout);
+#endif
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> s >> t;
+    slen = strlen(s), tlen = strlen(t);
+    for (int i = 0; i < slen; ++i) sam.extend(s[i] - 'a');
+    cout << cal() << '\n';
+
+    return 0;
+}
