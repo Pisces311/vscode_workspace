@@ -16,15 +16,13 @@ int main() {
     cin.tie(nullptr);
 
     srand(time(nullptr));
-    int t = 10;
+    int t = 1;
     cout << t << '\n';
     while (t--) {
-        int n = rint(1, 10);
-        cout << n << '\n';
-        for (int i = 1; i <= n; ++i) cout << (char)(rint(0, 1) + '0');
-        cout << '\n';
-        for (int i = 1; i <= n; ++i) cout << (char)(rint(0, 1) + '0');
-        cout << '\n';
+        int n = rint(1, 5);
+        cout << n << ' ' << rint(1, 100) << '\n';
+        for (int i = 1; i <= n; ++i)
+            cout << rint(1, 20) << ' ' << rint(1, 20) << '\n';
     }
 
     return 0;

@@ -2,16 +2,19 @@
 using namespace std;
 
 using ll = long long;
-constexpr int maxn = 1e5 + 10;
+constexpr int maxn = 2e5 + 5;
 
-int T, n;
-char s[maxn], t[maxn];
-int scnt[maxn], tcnt[maxn], dif[maxn];
+struct node {
+    int val, id;
+    bool operator<(const node& a) const { return val < a.val; }
+} c[maxn << 1];
 
-inline void init(int n) {
-    memset(scnt, 0, sizeof(int) * (n + 5));
-    memset(tcnt, 0, sizeof(int) * (n + 5));
-    memset(dif, 0, sizeof(int) * (n + 5));
+int n, p;
+int a[maxn], b[maxn];
+int cnt[maxn];
+
+inline void init() {
+    fill(cnt + 1, cnt + n + 1, 0);
 }
 
 int main() {
@@ -22,52 +25,27 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
+    int T;
     cin >> T;
-    while (T--) {
-        cin >> n >> (s + 1) >> (t + 1);
-        s[n + 1] = t[n + 1] = '0';
-        init(n);
-        for (int i = 1; i <= n; ++i) {
-            scnt[i] = scnt[i - 1];
-            tcnt[i] = tcnt[i - 1];
-            if (s[i] == '1') ++scnt[i];
-            if (t[i] == '1') ++tcnt[i];
+    for (int cas = 1; cas <= T; ++cas) {
+        cin >> n >> p;
+        init();
+        for (int i = 1; i <= n; ++i) cin >> a[i] >> b[i];
+        for (int i = 1; i <= n; ++i) c[i] = {a[i], i};
+        for (int i = 1; i <= n; ++i) c[n + i] = {b[i], i};
+        sort(c + 1, c + 2 * n + 1);
+        int ans = 0, cur = 0;
+        for (int i = 2 * n, pos = i + 1; i; --i) {
+            int score = (c[i].val * p + 99) / 100;
+            while (pos > 2 && c[pos - 1].val >= score) {
+                --pos;
+                if (++cnt[c[pos].id] == 1) ++cur;
+            }
+            ans = max(ans, cur);
+            if (!--cnt[c[i].id]) --cur;
         }
-        for (int i = n; i >= 1; --i) {
-            dif[i] = dif[i + 1];
-            if (s[i] != t[i]) ++dif[i];
-        }
-        int ans = dif[1];
-        for (int i = 1; i <= n; ++i) {
-            int cur = dif[i + 1];
-            if (s[i] == '1') ++cur;
-            cur += i - 1 - scnt[i - 1];
-            cur += 1;
-            cur += tcnt[i - 1];
-            ans = min(ans, cur);
-        }
-        cout << ans << '\n';
+        cout << "Case #" << cas << ": " << ans << '\n';
     }
 
     return 0;
 }
-/*
-9
-011111011
-110000100
-*/
-
-
-
-/*
-5
-6
-1
-4
-2
-3
-5
-0
-1
-0
-*/
