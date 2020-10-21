@@ -1,16 +1,23 @@
-#include <bits/stdc++.h>
+#include <string.h>
+
+#include <iostream>
+#include <numeric>
+#include <queue>
 using namespace std;
 
 typedef long long ll;
-const int maxn = 12e2 + 5;
-const int maxm = 12e4 + 5;
+const int maxn = 4e2 + 5;
+const int maxm = 1e6 + 5;
 const int inf = 0x3f3f3f3f;
 
 struct Edge {
     int u, v, w, next;
-} edge[maxm << 1];
+} edge[maxm];
 
-// 点1开始编号
+int F, P;
+int cow[maxn], slt[maxn];
+ll dis[maxn][maxn];
+
 int S = 1, T, tot;
 int head[maxn];
 int h[maxn], e[maxn], gap[maxn << 1];
@@ -115,4 +122,61 @@ int hlpp(int n) {
         }
     }
     return e[T];
+}
+
+void floyd() {
+    for (int k = 1; k <= F; ++k)
+        for (int i = 1; i <= F; ++i)
+            for (int j = 1; j <= F; ++j)
+                dis[i][j] = min(dis[i][j], dis[i][k] + dis[k][j]);
+}
+
+bool check(ll mid) {
+    init();
+    for (int i = 1; i <= F; ++i) {
+        add_edge(S, i + 1, cow[i]);
+        add_edge(i + 1 + F, T, slt[i]);
+    }
+    for (int i = 1; i <= F; ++i) {
+        for (int j = 1; j <= F; ++j) {
+            if (dis[i][j] <= mid) {
+                add_edge(i + 1, j + 1 + F, inf);
+            }
+        }
+    }
+    return hlpp(1 + 2 * F + 1) == accumulate(cow + 1, cow + F + 1, 0);
+}
+
+int main() {
+#ifdef DEBUG
+    freopen("test.in", "r", stdin);
+    freopen("test.out", "w", stdout);
+#endif
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    cin >> F >> P;
+    for (int i = 1; i <= F; ++i) cin >> cow[i] >> slt[i];
+    memset(dis, 0x3f, sizeof(dis));
+    for (int i = 1; i <= F; ++i) dis[i][i] = 0;
+    for (int i = 1; i <= P; ++i) {
+        int u, v;
+        ll w;
+        cin >> u >> v >> w;
+        dis[u][v] = dis[v][u] = min(dis[u][v], w);
+    }
+    floyd();
+    S = 1, T = 1 + 2 * F + 1;
+    ll l = 0, r = 1e14, ans = -1;
+    while (l <= r) {
+        ll mid = (l + r) >> 1;
+        if (check(mid)) {
+            r = mid - 1;
+            ans = mid;
+        } else
+            l = mid + 1;
+    }
+    cout << ans << '\n';
+
+    return 0;
 }
