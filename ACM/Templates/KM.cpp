@@ -1,70 +1,121 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-const int maxn = 3e2 + 5;
-const int inf = 0x3f3f3f3f;
+using ll = long long;
 
-int wx[maxn], wy[maxn];       //每个点的顶标值
-int cx[maxn], cy[maxn];       //存储左图和右图的连边对象
-bool visx[maxn], visy[maxn];  //每个点是否加入增广路
-int cntx, cnty;               //分别是X和Y的点数
-int edge[maxn][maxn];         //领接矩阵
-int slack[maxn];              //边权和顶标最小的差值
+template <typename T>
+struct KM {
+    int n;
+    vector<int> cx, cy;  // 左右点的匹配对象
+    vector<int> pre;
+    vector<bool> visx, visy;
+    vector<T> wx, wy;
+    vector<vector<T> > g;
+    vector<T> slack;
+    T inf, res;
+    queue<int> q;
+    int org_n, org_m;
 
-bool dfs(int u) {
-    visx[u] = true;
-    for (int v = 1; v <= cnty; ++v) {
-        if (edge[u][v] && !visy[v]) {
-            int t = wx[u] + wy[v] - edge[u][v];
-            if (!t) {
-                visy[v] = true;
-                if (cy[v] == -1 || dfs(cy[v])) {
-                    cx[u] = v;
-                    cy[v] = u;
-                    return true;
+    KM(int _n, int _m) {
+        org_n = _n;
+        org_m = _m;
+        n = max(_n, _m);
+        inf = numeric_limits<T>::max();
+        res = 0;
+        g = vector<vector<T> >(n, vector<T>(n, -inf));
+        cx = vector<int>(n, -1);
+        cy = vector<int>(n, -1);
+        pre = vector<int>(n);
+        visx = vector<bool>(n);
+        visy = vector<bool>(n);
+        wx = vector<T>(n, -inf);
+        wy = vector<T>(n);
+        slack = vector<T>(n);
+    }
+
+    // custom
+    void addEdge(int u, int v, int w) {
+        g[u][v] = w;  // 负值还不如不匹配 因此设为0不影响
+    }
+
+    bool check(int v) {
+        visy[v] = true;
+        if (cy[v] != -1) {
+            q.push(cy[v]);
+            visx[cy[v]] = true;
+            return false;
+        }
+        while (v != -1) {
+            cy[v] = pre[v];
+            swap(v, cx[pre[v]]);
+        }
+        return true;
+    }
+
+    void bfs(int i) {
+        while (!q.empty()) q.pop();
+        q.push(i);
+        visx[i] = true;
+        while (true) {
+            while (!q.empty()) {
+                int u = q.front();
+                q.pop();
+                for (int v = 0; v < n; v++) {
+                    if (!visy[v] && g[u][v] != -inf) {
+                        T delta = wx[u] + wy[v] - g[u][v];
+                        if (slack[v] >= delta) {
+                            pre[v] = u;
+                            if (delta) {
+                                slack[v] = delta;
+                            } else if (check(v)) {
+                                return;
+                            }
+                        }
+                    }
                 }
-            } else {
-                slack[v] = min(slack[v], t);
-                // slack[v]存的是Y部的点需要变成相等子图顶标值最小增加多少
+            }
+            // 没有增广路 修改顶标
+            T a = inf;
+            for (int j = 0; j < n; j++) {
+                if (!visy[j]) {
+                    a = min(a, slack[j]);
+                }
+            }
+            for (int j = 0; j < n; j++) {
+                if (visx[j])  // S
+                    wx[j] -= a;
+                if (visy[j])  // T
+                    wy[j] += a;
+                else  // T'
+                    slack[j] -= a;
+            }
+            for (int j = 0; j < n; j++) {
+                if (!visy[j] && slack[j] == 0 && check(j)) {
+                    return;
+                }
             }
         }
     }
-    return false;
-}
 
-int KM() {
-    memset(cx, -1, sizeof(cx));
-    memset(cy, -1, sizeof(cy));
-    memset(wx, 0, sizeof(wx));  // wx的顶标为该点连接的边的最大权值
-    memset(wy, 0, sizeof(wy));
-    for (int i = 1; i <= cntx; ++i) {
-        for (int j = 1; j <= cnty; ++j) {
-            wx[i] = max(wx[i], edge[i][j]);
+    void solve() {
+        // 初始顶标
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (g[i][j] != -inf) wx[i] = max(wx[i], g[i][j]);
+            }
         }
-    }
-    for (int i = 1; i <= cntx; ++i) {
-        memset(slack, inf, sizeof(slack));
-        while (1) {
-            memset(visx, false, sizeof(visx));
-            memset(visy, false, sizeof(visy));
-            if (dfs(i)) break;
-            int minz = inf;
-            for (int j = 1; j <= cnty; ++j)
-                if (!visy[j]) minz = min(minz, slack[j]);
-            //还未匹配，将X部的顶标减去minz，Y部的顶标加上minz
-            for (int j = 1; j <= cntx; ++j)
-                if (visx[j]) wx[j] -= minz;
-            //修改顶标后，要把所有不在交错树中的Y顶点的slack值都减去minz
-            for (int j = 1; j <= cnty; ++j)
-                if (visy[j])
-                    wy[j] += minz;
-                else
-                    slack[j] -= minz;
+
+        for (int i = 0; i < n; i++) {
+            fill(slack.begin(), slack.end(), inf);
+            fill(visx.begin(), visx.end(), false);
+            fill(visy.begin(), visy.end(), false);
+            bfs(i);
         }
+
+        // custom
+        for (int i = 0; i < org_n; ++i) res += g[i][cx[i]];
+        cout << res << '\n';
+        for (int i = 0; i < org_m; i++) cout << cy[i] + 1 << ' ';
+        cout << '\n';
     }
-    int ans = 0;
-    for (int i = 1; i <= cntx; ++i)
-        if (cx[i] != -1) ans += edge[i][cx[i]];
-    return ans;
-}
+};
