@@ -2,21 +2,12 @@
 using namespace std;
 
 using ll = long long;
-constexpr int maxn = 2e5 + 5;
+constexpr int maxn = 1e5 + 5;
 
-struct node {
-    int val, id;
-    bool operator<(const node& a) const { return val < a.val; }
-} c[maxn << 1];
-
-int n, p;
-int a[maxn], b[maxn];
-int cnt[maxn];
-
-inline void init() {
-    fill(cnt + 1, cnt + n + 1, 0);
-}
-
+int n;
+char s[maxn];
+char st[maxn];
+int len;
 int main() {
 #ifdef DEBUG
     freopen("test.in", "r", stdin);
@@ -25,26 +16,33 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int T;
-    cin >> T;
-    for (int cas = 1; cas <= T; ++cas) {
-        cin >> n >> p;
-        init();
-        for (int i = 1; i <= n; ++i) cin >> a[i] >> b[i];
-        for (int i = 1; i <= n; ++i) c[i] = {a[i], i};
-        for (int i = 1; i <= n; ++i) c[n + i] = {b[i], i};
-        sort(c + 1, c + 2 * n + 1);
-        int ans = 0, cur = 0;
-        for (int i = 2 * n, pos = i + 1; i; --i) {
-            int score = (c[i].val * p + 99) / 100;
-            while (pos > 2 && c[pos - 1].val >= score) {
-                --pos;
-                if (++cnt[c[pos].id] == 1) ++cur;
+    while (cin >> n) {
+        cin >> s;
+        int a = 0, b = 0, c = 0, d = 0;
+        int len = 0;
+        for (int i = 0; i < n; ++i) {
+            st[++len] = s[i];
+            if (len >= 4 && st[len] == '0' && st[len - 1] == '2' &&
+                st[len - 2] == '0' && st[len - 3] == '2') {
+                len -= 4;
+                d++;
             }
-            ans = max(ans, cur);
-            if (!--cnt[c[i].id]) --cur;
         }
-        cout << "Case #" << cas << ": " << ans << '\n';
+        for (int i = 1; i <= len; ++i) {
+            if (st[i] == '2') {
+                if (b) {
+                    --b, ++c;
+                } else
+                    ++a;
+            } else if (st[i] == '0') {
+                if (c) {
+                    --c, ++d;
+                } else if (a) {
+                    --a, ++b;
+                }
+            }
+        }
+        cout << d << '\n';
     }
 
     return 0;
