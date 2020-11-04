@@ -69,7 +69,7 @@ class Position_checker:
             and chessboard[x][y] == color
 
     @staticmethod
-    def selectable(x: int, y: int, size: int, chessboard, color: int) -> int:
+    def selectable(x: int, y: int, size: int, chessboard, color: int) -> bool:
         if chessboard[x][y] != COLOR_NONE:
             return False
 
