@@ -1,9 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int maxn = 1e4 + 5;
-const int maxm = 2e5 + 5;
-const int inf = 0x3f3f3f3f;
+using ll = long long;
+constexpr int maxn = 1e4 + 5;
+constexpr int maxm = 2e5 + 5;
+constexpr int inf = 0x3f3f3f3f;
 
 struct Edge {
     int u, v, w, next;
