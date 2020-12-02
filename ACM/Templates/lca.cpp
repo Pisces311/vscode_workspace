@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-const int maxn = 1e4 + 5;
-const int maxm = 1e5 + 5;
+using ll = long long;
+constexpr int maxn = 1e4 + 5;
+constexpr int maxm = 1e5 + 5;
 
 struct Edge {
     int u, v, next;
