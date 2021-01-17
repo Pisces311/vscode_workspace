@@ -1,16 +1,9 @@
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
-using ll = long long;
-constexpr int maxn = 1e5 + 5;
+typedef long long ll;
 
 int main() {
-#ifdef DEBUG
-    freopen("test.in", "r", stdin);
-    freopen("test.out", "w", stdout);
-#endif
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
 
     int T;
     cin >> T;
