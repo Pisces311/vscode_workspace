@@ -6,3 +6,4 @@ test.*
 *.in
 *.out
 *.txt
+.DS_Store
