@@ -1,33 +1,45 @@
+#include <fstream>
 #include <iostream>
 using namespace std;
 
 struct City {
-    char name[50];
-    char state[50];
-    char country[50];
+    char name[25];
+    char state[25];
+    char country[25];
     double latitude;
     double longitude;
-} cities[1000];
+} cities[800];
 
-int main() {
-    freopen("world_cities.csv", "r", stdin);
-    char line[200], value[50];
+void read_file(ifstream &file) {
+    char value[50];
+    string line;
     int cnt = 0;
-    while (cin.getline(line, 200)) {
-        cin.getline(cities[cnt].name, 50, ',');
-        cin.getline(cities[cnt].state, 50, ',');
-        cin.getline(cities[cnt].country, 50, ',');
-        cin.getline(value, 50, ',');
+    while (!file.eof()) {
+        file.getline(cities[cnt].name, 25, ',');
+        file.getline(cities[cnt].state, 25, ',');
+        file.getline(cities[cnt].country, 25, ',');
+        if (!file.good()) {
+            cout << "line too long." << endl;
+            return;
+        }
+        file.getline(value, 50, ',');
         cities[cnt].latitude = atof(value);
-        cin.getline(value, 50, ',');
+        file.getline(value, 50);
         cities[cnt].longitude = atof(value);
         cnt++;
     }
-    for (int i = 0; i < 10; i++) {
-        cout << cities[i].name << endl;
-        cout << cities[i].state << endl;
-        cout << cities[i].country << endl;
-        cout << cities[i].latitude << ' ' << cities[i].longitude << endl;
+}
+
+int main() {
+    ifstream file;
+    file.open("world_cities.csv");
+
+    if (file.is_open()) {
+        read_file(file);
+        file.close();
+    } else {
+        cout << "The file is missing." << endl;
     }
+
     return 0;
 }
