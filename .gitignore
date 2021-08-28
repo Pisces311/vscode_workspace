@@ -1,7 +1,6 @@
 .vscode/*
 clear.*
 test.*
-*.go
 *.csv
 *.in
 *.out
