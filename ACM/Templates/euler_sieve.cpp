@@ -1,25 +1,28 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-constexpr int maxn = 1e8 + 5;
+vector<int> spf;  // the smallest prime factor of number x (x >= 2)
+vector<int> prime;
 
-int prime[maxn], pnum = 0;  // 质数与质数个数
-int pf[maxn];               // 最小质因子
-bool nprime[maxn];
-
-// 对1~n使用欧拉筛
-void euler_sieve(int n) {
-    for (int i = 2; i <= n; ++i) {
-        if (!nprime[i]) {
-            prime[++pnum] = i;
-            pf[i] = i;
-        }
-        for (int j = 1; j <= pnum; ++j) {
-            if (i * prime[j] > n) break;
-            nprime[i * prime[j]] = true;
-            pf[i * prime[j]] = prime[j];
-            if (i % prime[j] == 0) break;
+void sieve(int n) {  // O(Nlog(logN)) ~ O(N)
+    spf.resize(n + 1);
+    for (int i = 2; i <= n; ++i) spf[i] = i;
+    for (int i = 2; i * i <= n; i++) {
+        if (spf[i] == i) {  // `i` is a prime number
+            for (int j = i * i; j < n; j += i)
+                if (spf[j] > i)
+                    spf[j] = i;  // update to the smallest prime factor of j
         }
     }
+    for (int i = 2; i <= n; i++)
+        if (spf[i] == i) prime.push_back(i);
+}
+
+vector<int> getPrimeFactors(int n) {  // O(logN)
+    vector<int> factors;
+    while (n > 1) {
+        factors.push_back(spf[n]);
+        n /= spf[n];
+    }
+    return factors;
 }

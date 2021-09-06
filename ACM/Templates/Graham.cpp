@@ -1,70 +1,71 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-constexpr int maxn = 1e4 + 5;
-constexpr double eps = 1e-8;
+const double eps = 1e-8;
 
 // p[1]为最下方的点
-struct point {
+struct Point {
     double x, y;
-} p[maxn], conv[maxn];
-
-struct vct {
-    point start, end;
+    bool operator<(const Point& rhs) const {
+        return y == rhs.y ? x < rhs.x : y < rhs.y;
+    }
+    double dis(const Point& rhs) { return hypot(x - rhs.x, y - rhs.y); }
 };
 
-int n, top = 0;
+struct Vector {
+    Point start, end;
+    // 叉积的右手定则
+    double cross_prod(const Vector& rhs) {
+        return (end.x - start.x) * (rhs.end.y - rhs.start.y) -
+               (rhs.end.x - rhs.start.x) * (end.y - start.y);
+    }
+};
 
 inline int sign(double a) { return a < -eps ? -1 : a > eps; }
-inline double dis(point p1, point p2) {
-    return hypot(p1.x - p2.x, p1.y - p2.y);
-}
 
-// 叉积 > 0: a在b顺时针方向
-// 叉积 == 0: a和b共线
-// 叉积 < 0: a在b逆时针方向
-double cross_product(vct a, vct b) {
-    return (a.end.x - a.start.x) * (b.end.y - b.start.y) -
-           (b.end.x - b.start.x) * (a.end.y - a.start.y);
-}
-
-bool cmp(point p1, point p2) {
-    double product = cross_product({p[1], p1}, {p[1], p2});
-    return product == 0 ? dis(p[1], p1) < dis(p[1], p2) : product > 0;
-}
-
-void Graham() {
-    for (int i = 1; i <= n; ++i)
-        if (p[i].y < p[1].y) swap(p[1], p[i]);
-    sort(p + 2, p + n + 1, cmp);
-    conv[++top] = p[1];
-    for (int i = 2; i <= n; ++i) {
-        vct v1 = {conv[top - 1], conv[top]}, v2 = {conv[top], p[i]};
-        while (top > 1 && sign(cross_product(v1, v2)) <= 0) --top;
-        conv[++top] = p[i];
+vector<Point> Graham(vector<Point>& p) {
+    int n = p.size();
+    for (int i = 0; i < n; i++)
+        if (p[i] < p[0]) swap(p[i], p[0]);
+    sort(p.begin() + 1, p.end(), [&](Point a, Point b) {
+        double prod = (Vector){p[0], a}.cross_prod({p[0], b});
+        return prod == 0 ? p[0].dis(a) < p[0].dis(b) : prod > 0;
+    });
+    vector<Point> conv;
+    conv.push_back(p[0]);
+    for (int i = 1; i < n; i++) {
+        while (conv.size() > 1 &&
+               sign((Vector){*(conv.rbegin() + 1), *conv.rbegin()}.cross_prod(
+                   {*conv.rbegin(), p[i]})) <= 0)
+            conv.pop_back();
+        conv.push_back(p[i]);
     }
-    conv[++top] = p[1];
+    conv.push_back(p[0]);
+    return conv;
 }
 
-double polygon_area() {
-    if (top < 4) return 0;
+double polygon_area(vector<Point> polygon) {
+    int n = polygon.size();
+    if (n < 4) return 0;
     double area = 0;
-    point origin = {0, 0};
-    for (int i = 1; i < top; ++i)
-        area += cross_product({origin, conv[i]}, {origin, conv[i + 1]});
+    Point origin = {0, 0};
+    for (int i = 0; i < n - 1; i++)
+        area +=
+            (Vector){origin, polygon[i]}.cross_prod({origin, polygon[i + 1]});
     area = fabs(area / 2.0);
     return area;
 }
 
-double polygon_perimeter() {
+double polygon_perimeter(vector<Point> polygon) {
     double perimeter = 0;
-    for (int i = 1; i < top; ++i) perimeter += dis(conv[i], conv[i + 1]);
+    for (int i = 0; i < polygon.size() - 1; i++)
+        perimeter += polygon[i].dis(polygon[i + 1]);
     return perimeter;
 }
 
-bool inside(point x) {
-    for (int i = 1; i < top; ++i)
-        if (cross_product({x, conv[i]}, {x, conv[i + 1]}) <= eps) return false;
+bool inside(vector<Point> polygon, Point x) {
+    for (int i = 0; i < polygon.size() - 1; i++)
+        if ((Vector){x, polygon[i]}.cross_prod({x, polygon[i + 1]}) <= eps)
+            return false;
     return true;
 }
