@@ -11,11 +11,10 @@ class Solution:
         for num in count:
             if num == 1 or num % 4 == 0 or num % 9 == 0 or num == 25:
                 continue
-            bits = sum(pow(2, i) for i, p in enumerate(primes) if num % p == 0)
-            for i in range(pow(2, 10)):
-                if i & bits:
-                    continue
-                res = i | bits
-                dp[res] += count[num] * dp[i]
-                dp[res] %= mod
-        return (pow(2, count[1], mod)) * (sum(dp) - 1) % mod
+            bits = sum(2 ** i for i, p in enumerate(primes) if num % p == 0)
+            for i in range(2 ** 10):
+                if dp[i] and i & bits == 0:
+                    res = i | bits
+                    dp[res] += count[num] * dp[i]
+                    dp[res] %= mod
+        return pow(2, count[1], mod) * (sum(dp) - 1) % mod

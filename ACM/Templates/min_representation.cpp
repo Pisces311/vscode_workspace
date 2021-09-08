@@ -1,14 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-constexpr int maxn = 1e6 + 5;
-
-int n;
-int s[maxn];
-
 // 0 based, 返回字符串循环同构最小表示法起始下标
-int find() {
+int least_rotation(string s) {
+    int n = s.size();
     int k = 0, i = 0, j = 1;
     while (k < n && i < n && j < n) {
         if (s[(i + k) % n] == s[(j + k) % n]) {
