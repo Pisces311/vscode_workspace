@@ -29,19 +29,3 @@ class SparseTable {
         return min(Min[l][k], Min[r - (1 << k) + 1][k]);
     }
 };
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    int n, m;
-    cin >> n >> m;
-    vector<int> a(n);
-    for (int& i : a) cin >> i;
-    SparseTable st(a);
-    while (m--) {
-        int l, r;
-        cin >> l >> r;
-        cout << st.qmax(l - 1, r - 1) << '\n';
-    }
-    return 0;
-}
