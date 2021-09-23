@@ -11,7 +11,7 @@ class SparseTable {
         Min.resize(n, vector<int>(k));
         Max.resize(n, vector<int>(k));
         for (int i = 0; i < n; i++) Min[i][0] = Max[i][0] = nums[i];
-        for (int i = 1; (1 << i) <= n; ++i) {
+        for (int i = 1; (1 << i) <= n; i++) {
             for (int j = 0; j + (1 << i) - 1 < n; j++) {
                 Max[j][i] = max(Max[j][i - 1], Max[j + (1 << (i - 1))][i - 1]);
                 Min[j][i] = min(Min[j][i - 1], Min[j + (1 << (i - 1))][i - 1]);

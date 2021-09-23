@@ -2,8 +2,6 @@
 using namespace std;
 
 class Solution {
-    int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
-
    public:
     long long interchangeableRectangles(vector<vector<int>>& rectangles) {
         map<pair<int, int>, int> Map;
