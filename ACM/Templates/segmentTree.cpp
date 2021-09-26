@@ -9,18 +9,19 @@ class segmentTree {
     segmentTree(int n)
         : val(vector<T>((n + 5) << 2)), lazy(vector<T>((n + 5) << 2)) {}
 
+    // 0-based
     segmentTree(vector<T>& a)
         : val(vector<T>((a.size() + 5) << 2)),
           lazy(vector<T>((a.size() + 5) << 2)) {
-        build(1, a, 1, a.size());
+        build(0, a, 0, a.size() - 1);
     }
 
-    int lc(int o) { return o << 1; }
-    int rc(int o) { return o << 1 | 1; }
+    int lc(int o) { return 2 * o + 1; }
+    int rc(int o) { return 2 * o + 2; }
 
     void build(int o, vector<T>& a, int l, int r) {
         if (l == r) {
-            val[o] = a[l - 1];
+            val[o] = a[l];
         } else {
             int mid = (l + r) >> 1;
             build(lc(o), a, l, mid);

@@ -1,32 +1,32 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-const int maxn = 1e5 + 5;
+class KMP {
+   public:
+    string s, t;
+    vector<int> next;
 
-int nxt[maxn];
+    KMP(string s, string t) : s(s), t(t), next(vector<int>(t.size())) { getNext(); }
 
-void get_next(char *p) {
-    nxt[0] = 0;
-    int plen = strlen(p);
-    for (int q = 1, k = 0; q < plen; ++q) {
-        while (k > 0 && p[q] != p[k]) k = nxt[k - 1];
-        if (p[q] == p[k]) ++k;
-        nxt[q] = k;
-    }
-}
-
-int KMP(char *s, char *p) {
-    get_next(p);
-    int slen = strlen(s), plen = strlen(p);
-    int cnt = 0;
-    for (int i = 0, j = 0; i < slen; ++i) {
-        while (j > 0 && p[j] != s[i]) j = nxt[j - 1];
-        if (p[j] == s[i]) ++j;
-        if (j == plen) {
-            ++cnt;
-            j = nxt[j - 1];
+    void getNext() {
+        for (int q = 1, k = 0; q < t.size(); q++) {
+            while (k > 0 && t[q] != t[k]) k = next[k - 1];
+            if (t[q] == t[k]) k++;
+            next[q] = k;
         }
     }
-    return cnt;
-}
+
+    // @return the start positions of all occurrences of t in s
+    vector<int> find() {
+        vector<int> pos;
+        for (int i = 0, j = 0; i < s.size(); i++) {
+            while (j > 0 && t[j] != s[i]) j = next[j - 1];
+            if (t[j] == s[i]) j++;
+            if (j == t.size()) {
+                pos.push_back(i - t.size() + 1);
+                j = next[j - 1];
+            }
+        }
+        return pos;
+    }
+};
