@@ -52,7 +52,7 @@ class segmentTree {
                 query(rc(o), mid + 1, r, ql, qr));
     }
 
-    void update(int o, int l, int r, int ql, int qr, int k) {
+    void update(int o, int l, int r, int ql, int qr, T k) {
         if (r < ql || qr < l) return;
         if (ql <= l && r <= qr) {
             lazy[o] += k;
