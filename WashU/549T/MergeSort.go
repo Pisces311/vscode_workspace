@@ -3,7 +3,7 @@ package main
 import "sync"
 
 func merge(a []int, mid int) {
-
+	// do something here
 }
 
 func mergeSort(a []int) {
@@ -11,15 +11,20 @@ func mergeSort(a []int) {
 	if n == 1 {
 		return
 	}
+
 	mid := n / 2
+
 	var wg sync.WaitGroup
 	wg.Add(1)
+
 	go func() {
 		defer wg.Done()
 		mergeSort(a[:mid])
 	}()
+
 	mergeSort(a[mid:])
 	wg.Wait()
+
 	merge(a, mid)
 }
 
