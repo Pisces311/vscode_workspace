@@ -1,21 +1,44 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-constexpr int maxn = 1e5 + 5;
+// longest increasing subsequence
+struct LIS {
+    vector<int> a, stk;
 
-int n;
-int a[maxn], stk[maxn];
+   public:
+    LIS(vector<int>& arr) : a(arr) { stk.clear(); }
 
-int lis(int l, int r) {
-    int top = 0;
-    for (int i = l; i <= r; ++i) {
-        if (!top || a[i] > stk[top])
-            stk[++top] = a[i];
-        else {
-            int p = lower_bound(stk + 1, stk + top + 1, a[i]) - stk;
-            stk[p] = a[i];
+    int solve() {
+        int n = a.size();
+        for (int i = 0; i < n; i++) {
+            if (stk.empty() || a[i] > stk.back())
+                stk.push_back(a[i]);
+            else {
+                int p = lower_bound(stk.begin(), stk.end(), a[i]) - stk.begin();
+                stk[p] = a[i];
+            }
         }
+        return stk.size();
     }
-    return top;
-}
+};
+
+// longest non-decreasing subsequence
+struct LNDS {
+    vector<int> a, stk;
+
+   public:
+    LNDS(vector<int>& arr) : a(arr) { stk.clear(); }
+
+    int solve() {
+        int n = a.size();
+        for (int i = 0; i < n; i++) {
+            if (stk.empty() || a[i] >= stk.back())
+                stk.push_back(a[i]);
+            else {
+                int p = upper_bound(stk.begin(), stk.end(), a[i]) - stk.begin();
+                stk[p] = a[i];
+            }
+        }
+        return stk.size();
+    }
+};
