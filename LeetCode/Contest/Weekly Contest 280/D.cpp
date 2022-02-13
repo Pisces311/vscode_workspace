@@ -2,7 +2,7 @@
 using namespace std;
 
 template <typename T>
-struct KM {  // km
+struct hungarian {  // km
     int n;
     vector<int> matchx;  // 左集合对应的匹配点
     vector<int> matchy;  // 右集合对应的匹配点
@@ -19,7 +19,7 @@ struct KM {  // km
     int org_n;
     int org_m;
 
-    KM(int _n, int _m) {
+    hungarian(int _n, int _m) {
         org_n = _n;
         org_m = _m;
         n = max(_n, _m);
@@ -107,7 +107,7 @@ struct KM {  // km
         }
     }
 
-    void solve() {
+    int solve() {
         // 初始顶标
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -130,10 +130,20 @@ struct KM {  // km
                 matchx[i] = -1;
             }
         }
-        cout << res << "\n";
-        for (int i = 0; i < org_n; i++) {
-            cout << matchx[i] + 1 << " ";
+        return res;
+    }
+};
+
+class Solution {
+   public:
+    int maximumANDSum(vector<int>& nums, int numSlots) {
+        hungarian<int> km(nums.size(), 2 * numSlots);
+        for (int i = 0; i < nums.size(); i++) {
+            for (int j = 0; j < numSlots; j++) {
+                km.addEdge(i, j, nums[i] & (j + 1));
+                km.addEdge(i, j + numSlots, nums[i] & (j + 1));
+            }
         }
-        cout << "\n";
+        return km.solve();
     }
 };
