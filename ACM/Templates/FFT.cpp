@@ -1,51 +1,62 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-const int maxn = 1e5 + 5;
-const double Pi = acos(-1.0);
-const double eps = 5e-1;
+using cd = complex<double>;
+const double PI = acos(-1);
 
-namespace FFT {
-struct Complex {
-    double r, i;
-    Complex(double real = 0.0, double image = 0.0) {
-        r = real;
-        i = image;
+void FFT(vector<cd>& a, bool invert) {
+    int n = a.size();
+    for (int i = 1, j = 0; i < n; i++) {
+        int bit = n >> 1;
+        for (; j & bit; bit >>= 1) j ^= bit;
+        j ^= bit;
+        if (i < j) swap(a[i], a[j]);
     }
-    Complex operator+(const Complex o) { return Complex(r + o.r, i + o.i); }
-    Complex operator-(const Complex o) { return Complex(r - o.r, i - o.i); }
-    Complex operator*(const Complex o) {
-        return Complex(r * o.r - i * o.i, r * o.i + i * o.r);
-    }
-};
-
-void butterfly(Complex *A, int l) {
-    for (int i = 1, j = l / 2; i < l - 1; ++i) {
-        if (i < j) swap(A[i], A[j]);
-        int k = l / 2;
-        while (j >= k) j -= k, k >>= 1;
-        if (j < k) j += k;
-    }
-}
-
-// len: 大于乘积项数的最小2的整数次幂
-// on=1: DFT, on=-1: IDFT
-void FFT(Complex *A, int len, double on) {
-    butterfly(A, len);
-    for (int h = 2; h <= len; h <<= 1) {
-        Complex wn(cos(on * 2 * Pi / h), sin(on * 2 * Pi / h));
-        for (int j = 0; j < len; j += h) {
-            Complex w(1, 0);
-            for (int k = j; k < j + h / 2; ++k) {
-                Complex u = A[k], t = w * A[k + h / 2];
-                A[k] = u + t;
-                A[k + h / 2] = u - t;
-                w = w * wn;
+    for (int len = 2; len <= n; len <<= 1) {
+        double ang = 2 * PI / len * (invert ? -1 : 1);
+        cd wlen(cos(ang), sin(ang));
+        for (int i = 0; i < n; i += len) {
+            cd w(1);
+            for (int j = 0; j < len / 2; j++) {
+                cd u = a[i + j], v = a[i + j + len / 2] * w;
+                a[i + j] = u + v;
+                a[i + j + len / 2] = u - v;
+                w *= wlen;
             }
         }
     }
-    if (on < 0)
-        for (int i = 0; i < len; i++) A[i].r /= len, A[i].i /= len;
+    if (invert) {
+        for (cd& x : a) x /= n;
+    }
 }
-}  // namespace FFT
+
+vector<int> multiply(vector<int> const& a, vector<int> const& b, bool normal) {
+    vector<cd> fa(a.begin(), a.end()), fb(b.begin(), b.end());
+    int n = 1;
+    while (n < a.size() + b.size()) n <<= 1;
+    fa.resize(n);
+    fb.resize(n);
+
+    FFT(fa, false);
+    FFT(fb, false);
+    for (int i = 0; i < n; i++) fa[i] *= fb[i];
+    FFT(fa, true);
+
+    vector<int> c(a.size() + b.size() - 1);
+    for (int i = 0; i < c.size(); i++) c[i] = round(fa[i].real());
+
+    if (normal) {
+        int carry = 0;
+        for (int i = 0; i < c.size(); i++) {
+            c[i] += carry;
+            carry = c[i] / 10;
+            c[i] %= 10;
+        }
+        while (carry) {
+            c.push_back(carry % 10);
+            carry /= 10;
+        }
+    }
+
+    return c;
+}
