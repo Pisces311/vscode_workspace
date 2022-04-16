@@ -1,5 +1,6 @@
 import time
-import random
+from random import randint, random
+from math import inf
 
 
 class Point:
@@ -24,33 +25,28 @@ class Rectangle:
 
 class Util:
     @staticmethod
-    def swap(a: list, l: int, r: int):
-        a[l], a[r] = a[r], a[l]
-
-    @staticmethod
     def find_kth(a: list, l: int, r: int, k: int):
-        Util.swap(a, l, random.randint(l, r))
-        tmpl, tmpr = l, r
-        while tmpl != tmpr:
-            while tmpl < tmpr and a[tmpl] <= a[tmpr]:
-                tmpr -= 1
-            Util.swap(a, tmpl, tmpr)
-            while tmpl < tmpr and a[tmpl] <= a[tmpr]:
-                tmpl += 1
-            Util.swap(a, tmpl, tmpr)
-        n = tmpl - l + 1
+        pivot = randint(l, r)
+        a[l], a[pivot] = a[pivot], a[l]
+        lp, rp = l, r
+        while lp != rp:
+            while lp < rp and a[lp] <= a[rp]:
+                rp -= 1
+            a[lp], a[rp] = a[rp], a[lp]
+            while lp < rp and a[lp] <= a[rp]:
+                lp += 1
+            a[lp], a[rp] = a[rp], a[lp]
+        n = lp - l + 1
         if n == k:
-            return a[tmpl]
+            return a[lp]
         elif n < k:
-            return Util.find_kth(a, tmpl + 1, r, k - n)
+            return Util.find_kth(a, lp + 1, r, k - n)
         else:
-            return Util.find_kth(a, l, tmpl, k)
+            return Util.find_kth(a, l, lp, k)
 
     @staticmethod
     def intersect(a: Rectangle, b: Rectangle):
-        if a.x1 > b.x2 or a.x2 < b.x1 or a.y1 > b.y2 or a.y2 < b.y1:
-            return False
-        return True
+        return not (a.x1 > b.x2 or a.x2 < b.x1 or a.y1 > b.y2 or a.y2 < b.y1)
 
     @staticmethod
     def point_in_rec(a: Point, b: Rectangle):
@@ -73,25 +69,21 @@ class Node:
     def split_by_median(self):
         val = [point.x if self.split_x else point.y for point in self.points]
         med = Util.find_kth(val, 0, self.n - 1, (self.n + 1) // 2)
-        if self.split_x:
-            l = [point for point in self.points if point.x <= med]
-            r = [point for point in self.points if point.x > med]
-        else:
-            l = [point for point in self.points if point.y <= med]
-            r = [point for point in self.points if point.y > med]
+        l, r = [], []
+        for point in self.points:
+            if (self.split_x and point.x <= med) or (not self.split_x and point.y <= med):
+                l.append(point)
+            else:
+                r.append(point)
         return l, r, med
 
     def split_rectangle(self, med):
         if self.split_x:
-            l_rec = Rectangle(self.rec.x1, min(self.rec.x2, med),
-                              self.rec.y1, self.rec.y2)
-            r_rec = Rectangle(max(self.rec.x1, med), self.rec.x2,
-                              self.rec.y1, self.rec.y2)
+            l_rec = Rectangle(self.rec.x1, med, self.rec.y1, self.rec.y2)
+            r_rec = Rectangle(med, self.rec.x2, self.rec.y1, self.rec.y2)
         else:
-            l_rec = Rectangle(self.rec.x1, self.rec.x2,
-                              self.rec.y1, min(self.rec.y2, med))
-            r_rec = Rectangle(self.rec.x1, self.rec.x2,
-                              max(self.rec.y1, med), self.rec.y2)
+            l_rec = Rectangle(self.rec.x1, self.rec.x2, self.rec.y1, med)
+            r_rec = Rectangle(self.rec.x1, self.rec.x2, med, self.rec.y2)
         return l_rec, r_rec
 
     def report_all(self):
@@ -101,8 +93,8 @@ class Node:
 
 class KD_tree:
     def __init__(self, n: int, points: list[Point]) -> None:
-        self.root = self.__build(n, points, Rectangle(
-            float('-inf'), float('inf'), float('-inf'), float('inf')), True)
+        self.root = self.__build(
+            n, points, Rectangle(-inf, inf, -inf, inf), True)
 
     def __build(self, n: int, points: list[Point], rec: Rectangle, split_x: bool) -> Node:
         node = Node(n, points, rec, split_x)
@@ -115,24 +107,22 @@ class KD_tree:
         return node
 
     def range_query(self, node: Node, query: Rectangle) -> list:
-        if node.n == 1:
-            if Util.point_in_rec(node.points[0], query):
-                node.report_all()
+        if node is None:
             return
-        if Util.rec_in_rec(node.rec, query):
+        if node.n == 1 and Util.point_in_rec(node.points[0], query):
+            node.report_all()
+        elif Util.rec_in_rec(node.rec, query):
             node.report_all()
         elif Util.intersect(node.rec, query):
-            if node.l:
-                self.range_query(node.l, query)
-            if node.r:
-                self.range_query(node.r, query)
+            self.range_query(node.l, query)
+            self.range_query(node.r, query)
 
 
 if __name__ == '__main__':
     node_set = []
     num = 1000000
     for i in range(num):
-        node_set.append(Point(random.random(), random.random()))
+        node_set.append(Point(random(), random()))
     kdtree = KD_tree(num, node_set)
     query = Rectangle(0.2, 0.4, 0.2, 0.4)
 
@@ -147,5 +137,8 @@ if __name__ == '__main__':
             bf_cnt += 1
     t4 = time.time()
 
-    print(Point.cnt, bf_cnt)
+    if Point.cnt == bf_cnt:
+        print('Correct!')
+    else:
+        print('Wrong answer!')
     print((t2 - t1) * 1000, (t4 - t3) * 1000)
