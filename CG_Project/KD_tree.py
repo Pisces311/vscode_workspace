@@ -9,13 +9,14 @@ class Point:
     def __init__(self, x: float, y: float) -> None:
         self.x = x
         self.y = y
+        self.inside = False
 
     def report(self):
         Point.cnt += 1
-        # print(self.x, self.y)
+        self.inside = True
 
 
-class Rectangle:
+class Range:
     def __init__(self, x1: float, x2: float, y1: float, y2: float):
         self.x1 = x1
         self.x2 = x2
@@ -45,23 +46,23 @@ class Util:
             return Util.find_kth(a, l, lp, k)
 
     @staticmethod
-    def intersect(a: Rectangle, b: Rectangle):
+    def intersect(a: Range, b: Range):
         return not (a.x1 > b.x2 or a.x2 < b.x1 or a.y1 > b.y2 or a.y2 < b.y1)
 
     @staticmethod
-    def point_in_rec(a: Point, b: Rectangle):
+    def point_in_rng(a: Point, b: Range):
         return b.x1 <= a.x <= b.x2 and b.y1 <= a.y <= b.y2
 
     @staticmethod
-    def rec_in_rec(a: Rectangle, b: Rectangle):
+    def rng_in_rng(a: Range, b: Range):
         return b.x1 <= a.x1 <= a.x2 <= b.x2 and b.y1 <= a.y1 <= a.y2 <= b.y2
 
 
 class Node:
-    def __init__(self, n: int, points: list[Point], rec: Rectangle, split_x: bool) -> None:
+    def __init__(self, n: int, points: list[Point], rng: Range, split_x: bool) -> None:
         self.n = n
         self.points = points
-        self.rec = rec
+        self.rng = rng
         self.split_x = split_x
         self.l = None
         self.r = None
@@ -77,14 +78,11 @@ class Node:
                 r.append(point)
         return l, r, med
 
-    def split_rectangle(self, med):
+    def split_range(self, med):
         if self.split_x:
-            l_rec = Rectangle(self.rec.x1, med, self.rec.y1, self.rec.y2)
-            r_rec = Rectangle(med, self.rec.x2, self.rec.y1, self.rec.y2)
+            return Range(self.rng.x1, med, self.rng.y1, self.rng.y2), Range(med, self.rng.x2, self.rng.y1, self.rng.y2)
         else:
-            l_rec = Rectangle(self.rec.x1, self.rec.x2, self.rec.y1, med)
-            r_rec = Rectangle(self.rec.x1, self.rec.x2, med, self.rec.y2)
-        return l_rec, r_rec
+            return Range(self.rng.x1, self.rng.x2, self.rng.y1, med), Range(self.rng.x1, self.rng.x2, med, self.rng.y2)
 
     def report_all(self):
         for point in self.points:
@@ -93,27 +91,26 @@ class Node:
 
 class KD_tree:
     def __init__(self, n: int, points: list[Point]) -> None:
-        self.root = self.__build(
-            n, points, Rectangle(-inf, inf, -inf, inf), True)
+        self.root = self.__build(n, points, Range(-inf, inf, -inf, inf), True)
 
-    def __build(self, n: int, points: list[Point], rec: Rectangle, split_x: bool) -> Node:
-        node = Node(n, points, rec, split_x)
+    def __build(self, n: int, points: list[Point], rng: Range, split_x: bool) -> Node:
+        node = Node(n, points, rng, split_x)
         if node.n == 1:
             return node
         l_points, r_points, med = node.split_by_median()
-        l_rec, r_rec = node.split_rectangle(med)
-        node.l = self.__build(len(l_points), l_points, l_rec, not node.split_x)
-        node.r = self.__build(len(r_points), r_points, r_rec, not node.split_x)
+        l_rng, r_rng = node.split_range(med)
+        node.l = self.__build(len(l_points), l_points, l_rng, not node.split_x)
+        node.r = self.__build(len(r_points), r_points, r_rng, not node.split_x)
         return node
 
-    def range_query(self, node: Node, query: Rectangle) -> list:
+    def range_query(self, node: Node, query: Range) -> list:
         if node is None:
             return
-        if node.n == 1 and Util.point_in_rec(node.points[0], query):
+        if node.n == 1 and Util.point_in_rng(node.points[0], query):
             node.report_all()
-        elif Util.rec_in_rec(node.rec, query):
+        elif Util.rng_in_rng(node.rng, query):
             node.report_all()
-        elif Util.intersect(node.rec, query):
+        elif Util.intersect(node.rng, query):
             self.range_query(node.l, query)
             self.range_query(node.r, query)
 
@@ -124,7 +121,7 @@ if __name__ == '__main__':
     for i in range(num):
         node_set.append(Point(random(), random()))
     kdtree = KD_tree(num, node_set)
-    query = Rectangle(0.2, 0.4, 0.2, 0.4)
+    query = Range(0.2, 0.4, 0.2, 0.4)
 
     t1 = time.time()
     kdtree.range_query(kdtree.root, query)
@@ -133,12 +130,12 @@ if __name__ == '__main__':
     t3 = time.time()
     bf_cnt = 0
     for point in node_set:
-        if Util.point_in_rec(point, query):
+        if Util.point_in_rng(point, query):
             bf_cnt += 1
     t4 = time.time()
 
     if Point.cnt == bf_cnt:
-        print('Correct!')
+        print('Corrngt!')
     else:
         print('Wrong answer!')
     print((t2 - t1) * 1000, (t4 - t3) * 1000)
