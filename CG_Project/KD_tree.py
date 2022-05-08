@@ -138,7 +138,7 @@ class KD_tree:
         node.r = self.__build(len(rpoints), rpoints, rrng, not node.x)
         return node
 
-    def range_query(self, node: Node, query: Range) -> list:
+    def range_query(self, node: Node, query: Range) -> None:
         if node is None:
             return
         if node.n == 1 and Util.point_in_rng(node.points[0], query):
