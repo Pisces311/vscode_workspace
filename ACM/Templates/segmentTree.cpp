@@ -5,17 +5,6 @@ template <class T = int>
 class segmentTree {
     vector<T> val, lazy;
 
-   public:
-    segmentTree(int n)
-        : val(vector<T>((n + 5) << 2)), lazy(vector<T>((n + 5) << 2)) {}
-
-    // 0-based
-    segmentTree(vector<T>& a)
-        : val(vector<T>((a.size() + 5) << 2)),
-          lazy(vector<T>((a.size() + 5) << 2)) {
-        build(0, a, 0, a.size() - 1);
-    }
-
     int lc(int o) { return 2 * o + 1; }
     int rc(int o) { return 2 * o + 2; }
 
@@ -41,6 +30,17 @@ class segmentTree {
             lazy[rc(o)] += lazy[o];
             lazy[o] = 0;
         }
+    }
+
+   public:
+    segmentTree(int n)
+        : val(vector<T>((n + 5) << 2)), lazy(vector<T>((n + 5) << 2)) {}
+
+    // 0-based
+    segmentTree(vector<T>& a)
+        : val(vector<T>((a.size() + 5) << 2)),
+          lazy(vector<T>((a.size() + 5) << 2)) {
+        build(0, a, 0, a.size() - 1);
     }
 
     T query(int o, int l, int r, int ql, int qr) {
