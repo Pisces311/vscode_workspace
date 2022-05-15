@@ -1,16 +1,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct FenwickTree {
-    vector<int> bit;  // binary indexed tree
+struct BIT {
+    vector<int> bit;
     int n;
 
-    FenwickTree(int n) {
-        this->n = n;
-        bit.assign(n, 0);
-    }
+    BIT(int n) : n(n) { bit.assign(n, 0); }
 
-    FenwickTree(vector<int> a) : FenwickTree(a.size()) {
+    BIT(vector<int> a) : BIT(a.size()) {
         for (int i = 0; i < a.size(); i++) add(i, a[i]);
     }
 
