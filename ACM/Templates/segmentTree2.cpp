@@ -15,8 +15,8 @@ class segmentTree {
     }
 
     void pushDown(int o, int l, int r) {
-        if (!tr[o].ls) tr[o].ls = ++cnt, tr.push_back(Node());
-        if (!tr[o].rs) tr[o].rs = ++cnt, tr.push_back(Node());
+        if (!tr[o].ls) tr[o].ls = ++cnt, tr.emplace_back();
+        if (!tr[o].rs) tr[o].rs = ++cnt, tr.emplace_back();
         if (tr[o].lazy != 0) {
             int mid = (l + r) / 2;
             tr[tr[o].ls].val += tr[o].lazy * (mid - l + 1);
