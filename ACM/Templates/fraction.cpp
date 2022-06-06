@@ -1,20 +1,20 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int gcd(int a, int b) { return b ? gcd(b, a % b) : a; }
-
-int lcm(int a, int b) { return a / gcd(a, b) * b; }
-
-struct fraction {
-    int a, b;
+class fraction {
+    int gcd(int a, int b) { return b ? gcd(b, a % b) : a; }
+    int lcm(int a, int b) { return a / gcd(a, b) * b; }
     int sign(int x) { return (x > 0 ? 1 : -1); }
-    fraction() : a(0), b(1) {}
-    fraction(int x) : a(x), b(1) {}
     void reduce() {
         int m = gcd(abs(a), abs(b));
         a /= m * sign(b);
         b = (a ? abs(b / m) : 1);
     }
+
+   public:
+    int a, b;
+    fraction() : a(0), b(1) {}
+    fraction(int x) : a(x), b(1) {}
     fraction(int x, int y) : a(x), b(y) { reduce(); }
     bool operator<(const fraction &f) {
         int c = sign(b) * sign(f.b);
@@ -39,11 +39,11 @@ struct fraction {
     }
     friend ostream &operator<<(ostream &out, const fraction &f) {
         if (f.a == 0)
-            cout << 0;
+            out << 0;
         else if (f.b == 1)
-            cout << f.a;
+            out << f.a;
         else
-            cout << f.a << '/' << f.b;
+            out << f.a << '/' << f.b;
         return out;
     }
 };
