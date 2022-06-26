@@ -11,7 +11,7 @@ class Trie {
     void insert(string word) {
         Trie* u = this;
         for (char ch : word) {
-            if (u->next.find(ch) == u->next.end()) u->next[ch] = new Trie();
+            if (!u->next.count(ch)) u->next[ch] = new Trie();
             u = u->next[ch];
         }
         u->isWord = true;
@@ -20,7 +20,7 @@ class Trie {
     bool search(string word) {
         Trie* u = this;
         for (char ch : word) {
-            if (u->next.find(ch) == u->next.end()) return false;
+            if (!u->next.count(ch)) return false;
             u = u->next[ch];
         }
         return u->isWord;
@@ -29,7 +29,7 @@ class Trie {
     bool startsWith(string prefix) {
         Trie* u = this;
         for (char ch : prefix) {
-            if (u->next.find(ch) == u->next.end()) return false;
+            if (!u->next.count(ch)) return false;
             u = u->next[ch];
         }
         return true;
