@@ -11,7 +11,6 @@ class Manacher {
     vector<int> p;
     Manacher(string s) : s(s), p(vector<int>((s.size() + 5) << 1)) {
         enh = "$#";
-        int j = 1;
         for (int i = 0; i < s.size(); i++) {
             enh += s[i];
             enh += '#';
