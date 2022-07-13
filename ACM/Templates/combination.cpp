@@ -1,32 +1,36 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-constexpr int maxn = 1e5 + 5;
-constexpr int mod = 998244353;
+class Comb {
+    using ll = long long;
 
-ll fac[maxn], facinv[maxn];
+    int mod;
+    vector<ll> fac, facinv;
 
-ll qpow(ll a, ll b) {
-    ll ret = 1;
-    a %= mod;
-    while (b > 0) {
-        if (b & 1) ret = (ret * a) % mod;
-        b /= 2;
-        a = (a * a) % mod;
+    ll qpow(ll a, ll b) {
+        ll ret = 1;
+        a %= mod;
+        while (b > 0) {
+            if (b & 1) ret = (ret * a) % mod;
+            b /= 2;
+            a = (a * a) % mod;
+        }
+        return ret;
     }
-    return ret;
-}
 
-inline void init(int n) {
-    fac[0] = 1;
-    for (int i = 1; i <= n; ++i) fac[i] = fac[i - 1] * i % mod;
-    facinv[n] = qpow(fac[n], mod - 2);
-    for (int i = n - 1; i >= 0; --i) facinv[i] = facinv[i + 1] * (i + 1) % mod;
-}
+   public:
+    Comb(int n, int mod)
+        : fac(vector<ll>(n + 1)), facinv(vector<ll>(n + 1)), mod(mod) {
+        fac[0] = 1;
+        for (int i = 1; i <= n; i++) fac[i] = fac[i - 1] * i % mod;
+        facinv[n] = qpow(fac[n], mod - 2);
+        for (int i = n - 1; i >= 0; i--)
+            facinv[i] = facinv[i + 1] * (i + 1) % mod;
+    }
 
-inline ll C(ll n, ll k) {
-    if (!k || n == k) return 1;
-    if (n < k || k < 0) return 0;
-    return fac[n] * facinv[k] % mod * facinv[n - k] % mod;
-}
+    ll comb(ll n, ll k) {
+        if (!k || n == k) return 1;
+        if (n < k || k < 0) return 0;
+        return fac[n] * facinv[k] % mod * facinv[n - k] % mod;
+    }
+};
