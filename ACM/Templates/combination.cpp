@@ -10,9 +10,8 @@ class Comb {
     ll qpow(ll a, ll b) {
         ll ret = 1;
         a %= mod;
-        while (b > 0) {
+        for (; b; b >>= 1) {
             if (b & 1) ret = (ret * a) % mod;
-            b /= 2;
             a = (a * a) % mod;
         }
         return ret;

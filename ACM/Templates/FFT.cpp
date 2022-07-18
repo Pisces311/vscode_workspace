@@ -30,7 +30,7 @@ void FFT(vector<cd>& a, bool invert) {
     }
 }
 
-vector<int> multiply(vector<int> const& a, vector<int> const& b, bool normal) {
+vector<double> multiply(const vector<double>& a, const vector<double>& b) {
     vector<cd> fa(a.begin(), a.end()), fb(b.begin(), b.end());
     int n = 1;
     while (n < a.size() + b.size()) n <<= 1;
@@ -42,21 +42,9 @@ vector<int> multiply(vector<int> const& a, vector<int> const& b, bool normal) {
     for (int i = 0; i < n; i++) fa[i] *= fb[i];
     FFT(fa, true);
 
-    vector<int> c(a.size() + b.size() - 1);
-    for (int i = 0; i < c.size(); i++) c[i] = round(fa[i].real());
-
-    if (normal) {
-        int carry = 0;
-        for (int i = 0; i < c.size(); i++) {
-            c[i] += carry;
-            carry = c[i] / 10;
-            c[i] %= 10;
-        }
-        while (carry) {
-            c.push_back(carry % 10);
-            carry /= 10;
-        }
-    }
+    vector<double> c(a.size() + b.size() - 1);
+    // using round() if needed
+    for (int i = 0; i < c.size(); i++) c[i] = fa[i].real();
 
     return c;
 }
