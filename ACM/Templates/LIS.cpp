@@ -8,6 +8,7 @@ struct LIS {
    public:
     LIS(vector<int>& arr) : a(arr) { stk.clear(); }
 
+    // stk[i]: the smallest possible value that a subsequence with length (i + 1) might end with
     int solve() {
         int n = a.size();
         for (int i = 0; i < n; i++) {

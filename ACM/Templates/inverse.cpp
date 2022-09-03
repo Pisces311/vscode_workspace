@@ -2,7 +2,6 @@
 using namespace std;
 
 using ll = long long;
-constexpr int maxn = 1e5 + 5;
 constexpr int mod = 1e9 + 7;
 
 ll qpow(ll a, ll b) {

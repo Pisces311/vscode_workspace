@@ -1,9 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-constexpr int maxn = 1e5 + 5;
-constexpr ll mod = 1e9 + 7;
+using ll = long long;
+const int mod = 1e9 + 7;
 
 ll qpow(ll a, ll b) {
     ll ret = 1;
