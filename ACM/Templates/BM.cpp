@@ -2,11 +2,7 @@
 using namespace std;
 
 using ll = long long;
-constexpr int maxn = 1e5 + 5;
 constexpr int mod = 1e9 + 7;
-
-int T;
-ll n;
 
 ll qpow(ll a, ll b) {
     ll ret = 1;
@@ -104,15 +100,10 @@ int gao(vector<int> a, ll n) {
 };  // namespace linear_seq
 
 int main() {
-#ifdef DEBUG
-    freopen("test.in", "r", stdin);
-    freopen("test.out", "w", stdout);
-#endif
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     // 打表前8~10项左右，最后调用gao()得第n项
     vector<int> v({3, 9, 20, 46, 106, 244, 560, 1286, 2956, 6794});
+    int T;
+    ll n;
     cin >> T;
     while (T--) {
         cin >> n;

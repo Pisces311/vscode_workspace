@@ -2,9 +2,8 @@
 using namespace std;
 
 using ll = long long;
-const int mod = 1e9 + 7;
 
-ll qpow(ll a, ll b) {
+ll qpow(ll a, ll b, int mod) {
     ll ret = 1;
     a %= mod;
     while (b > 0) {
