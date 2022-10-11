@@ -1,32 +1,30 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template <class T = int>
+template <typename T>
 class SparseTable {
-    vector<vector<T>> _min, _max;
+    using func_type = function<T(const T &, const T &)>;
+
+    vector<vector<T>> ST;
+    func_type op;
+
+    static T default_func(const T &t1, const T &t2) { return max(t1, t2); }
 
    public:
-    SparseTable(vector<T>& nums) {
-        int n = nums.size();
-        int k = log2(n) + 5;
-        _min.assign(n, vector<T>(k));
-        _max.assign(n, vector<T>(k));
-        for (int i = 0; i < n; i++) _min[i][0] = _max[i][0] = nums[i];
+    SparseTable(const vector<T> &v, func_type _func = default_func) {
+        op = _func;
+        int n = v.size(), k = log2(n) + 5;
+        ST.assign(n, vector<T>(k));
+        for (int i = 0; i < n; ++i) ST[i][0] = v[i];
         for (int i = 1; (1 << i) <= n; i++) {
             for (int j = 0; j + (1 << i) - 1 < n; j++) {
-                _max[j][i] = max(_max[j][i - 1], _max[j + (1 << (i - 1))][i - 1]);
-                _min[j][i] = min(_min[j][i - 1], _min[j + (1 << (i - 1))][i - 1]);
+                ST[j][i] = op(ST[j][i - 1], ST[j + (1 << (i - 1))][i - 1]);
             }
         }
     }
 
-    T qmax(int l, int r) {
+    T query(int l, int r) {
         int k = log2(r - l + 1);
-        return max(_max[l][k], _max[r - (1 << k) + 1][k]);
-    }
-
-    T qmin(int l, int r) {
-        int k = log2(r - l + 1);
-        return min(_min[l][k], _min[r - (1 << k) + 1][k]);
+        return op(ST[l][k], ST[r - (1 << k) + 1][k]);
     }
 };
