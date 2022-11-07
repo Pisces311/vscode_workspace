@@ -1,71 +1,76 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-constexpr int maxn = 1e3;
-constexpr int maxm = 1e4;
-constexpr int inf = 0x3f3f3f3f;
+class MCMF {
+    const int inf = 0x3f3f3f3f;
 
-struct edge {
-    int v, w, cost, next;
-} edge[maxm];
+    struct Edge {
+        int v, w, cost, next;
+        Edge(int v, int w, int cost, int next)
+            : v(v), w(w), cost(cost), next(next) {}
+    };
 
-int S, T, tot;
-int head[maxn], dis[maxn], pre[maxn];
-bool vis[maxn];
+    vector<int> head, pre, dis;
+    vector<bool> vis;
+    vector<Edge> edges;
 
-void init() {
-    tot = -1;
-    memset(head, -1, sizeof(head));
-}
-
-void add_edge(int u, int v, int w, int cost) {
-    edge[++tot] = {v, w, cost, head[u]};
-    head[u] = tot;
-    edge[++tot] = {u, 0, -cost, head[v]};
-    head[v] = tot;
-}
-
-bool spfa() {
-    memset(vis, 0, sizeof(vis));
-    memset(dis, inf, sizeof(dis));
-    memset(pre, -1, sizeof(pre));
-    dis[S] = 0;
-    queue<int> q;
-    q.push(S);
-    vis[S] = true;
-    while (!q.empty()) {
-        int u = q.front();
-        q.pop();
-        vis[u] = false;
-        for (int i = head[u]; i != -1; i = edge[i].next) {
-            if (edge[i].w) {
-                int v = edge[i].v;
-                if (dis[u] + edge[i].cost < dis[v]) {
-                    dis[v] = dis[u] + edge[i].cost;
-                    pre[v] = i;
-                    if (!vis[v]) {
-                        q.push(v);
-                        vis[v] = true;
+    bool spfa() {
+        vis.assign(n, false);
+        dis.assign(n, inf);
+        pre.assign(n, -1);
+        dis[S] = 0;
+        queue<int> q;
+        q.push(S);
+        vis[S] = true;
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            vis[u] = false;
+            for (int i = head[u]; i != -1; i = edges[i].next) {
+                auto& [v, w, cost, _] = edges[i];
+                if (w) {
+                    if (dis[u] + cost < dis[v]) {
+                        dis[v] = dis[u] + cost;
+                        pre[v] = i;
+                        if (!vis[v]) {
+                            q.push(v);
+                            vis[v] = true;
+                        }
                     }
                 }
             }
         }
+        return pre[T] != -1;
     }
-    return pre[T] != -1;
-}
 
-int min_cost_max_flow() {
-    int ret = 0;
-    while (spfa()) {
-        int flow = inf;
-        for (int i = T; i != S; i = edge[pre[i] ^ 1].v)
-            flow = min(edge[pre[i]].w, flow);
-        for (int i = T; i != S; i = edge[pre[i] ^ 1].v) {
-            edge[pre[i]].w -= flow;
-            edge[pre[i] ^ 1].w += flow;
-            ret += edge[pre[i]].cost * flow;
-        }
+   public:
+    int S, T, n;
+
+    MCMF(int S, int T, int n) : S(S), T(T), n(n) {
+        head.assign(n, -1);
+        edges.reserve(10005);
     }
-    return ret;
-}
+
+    void add_edge(int u, int v, int w, int cost) {
+        edges.emplace_back(v, w, cost, head[u]);
+        head[u] = edges.size() - 1;
+        edges.emplace_back(u, 0, -cost, head[v]);
+        head[v] = edges.size() - 1;
+    }
+
+    pair<int, int> min_cost_max_flow() {
+        int flow = 0, cost = 0;
+        while (spfa()) {
+            int cflow = inf;
+            for (int i = T; i != S; i = edges[pre[i] ^ 1].v)
+                cflow = min(edges[pre[i]].w, cflow);
+            flow += cflow;
+            for (int i = T; i != S; i = edges[pre[i] ^ 1].v) {
+                edges[pre[i]].w -= cflow;
+                edges[pre[i] ^ 1].w += cflow;
+                cost += edges[pre[i]].cost * cflow;
+            }
+        }
+        return make_pair(flow, cost);
+    }
+};

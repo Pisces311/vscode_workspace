@@ -1,139 +1,59 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template <typename T>
-struct KM {  // km
-    int n;
-    vector<int> matchx;  // 左集合对应的匹配点
-    vector<int> matchy;  // 右集合对应的匹配点
-    vector<int> pre;     // 连接右集合的左点
-    vector<bool> visx;   // 拜访数组 左
-    vector<bool> visy;   // 拜访数组 右
-    vector<T> lx;
-    vector<T> ly;
-    vector<vector<T> > g;
-    vector<T> slack;
-    T inf;
-    T res;
-    queue<int> q;
-    int org_n;
-    int org_m;
+class KM {
+    int n, m;
+    vector<int> u, v, p, way;
+    vector<vector<int>> A;
 
-    KM(int _n, int _m) {
-        org_n = _n;
-        org_m = _m;
-        n = max(_n, _m);
-        inf = numeric_limits<T>::max();
-        res = 0;
-        g = vector<vector<T> >(n, vector<T>(n));
-        matchx = vector<int>(n, -1);
-        matchy = vector<int>(n, -1);
-        pre = vector<int>(n);
-        visx = vector<bool>(n);
-        visy = vector<bool>(n);
-        lx = vector<T>(n, -inf);
-        ly = vector<T>(n);
-        slack = vector<T>(n);
+   public:
+    KM(int n, int m) : n(n), m(m) {
+        u.resize(n + 1);
+        v.resize(m + 1);
+        p.resize(m + 1);
+        way.resize(m + 1);
+        A.resize(n + 1, vector<int>(m + 1));
     }
 
-    void addEdge(int u, int v, int w) {
-        g[u][v] = max(w, 0);  // 负值还不如不匹配 因此设为0不影响
-    }
+    void add_edge(int from, int to, int cost) { A[from + 1][to + 1] = cost; }
 
-    bool check(int v) {
-        visy[v] = true;
-        if (matchy[v] != -1) {
-            q.push(matchy[v]);
-            visx[matchy[v]] = true;  // in S
-            return false;
-        }
-        // 找到新的未匹配点 更新匹配点 pre 数组记录着"非匹配边"上与之相连的点
-        while (v != -1) {
-            matchy[v] = pre[v];
-            swap(v, matchx[pre[v]]);
-        }
-        return true;
-    }
-
-    void bfs(int i) {
-        while (!q.empty()) {
-            q.pop();
-        }
-        q.push(i);
-        visx[i] = true;
-        while (true) {
-            while (!q.empty()) {
-                int u = q.front();
-                q.pop();
-                for (int v = 0; v < n; v++) {
-                    if (!visy[v]) {
-                        T delta = lx[u] + ly[v] - g[u][v];
-                        if (slack[v] >= delta) {
-                            pre[v] = u;
-                            if (delta) {
-                                slack[v] = delta;
-                            } else if (check(v)) {  // delta=0
-                                                    // 代表有机会加入相等子图
-                                                    // 找增广路 找到就return
-                                                    // 重建交错树
-                                return;
-                            }
-                        }
+    int solve() {
+        // Find the maximum matching "vector<pair<int,int>>result;" with all
+        // pairs As well as total cost "C" with the minimum assignment cost.
+        for (int i = 1; i <= n; ++i) {
+            p[0] = i;
+            int j0 = 0;
+            vector<int> minv(m + 1, INT_MAX);
+            vector<char> used(m + 1, false);
+            do {
+                used[j0] = true;
+                int i0 = p[j0], delta = INT_MAX, j1;
+                for (int j = 1; j <= m; ++j)
+                    if (!used[j]) {
+                        int cur = A[i0][j] - u[i0] - v[j];
+                        if (cur < minv[j]) minv[j] = cur, way[j] = j0;
+                        if (minv[j] < delta) delta = minv[j], j1 = j;
                     }
-                }
-            }
-            // 没有增广路 修改顶标
-            T a = inf;
-            for (int j = 0; j < n; j++) {
-                if (!visy[j]) {
-                    a = min(a, slack[j]);
-                }
-            }
-            for (int j = 0; j < n; j++) {
-                if (visx[j]) {  // S
-                    lx[j] -= a;
-                }
-                if (visy[j]) {  // T
-                    ly[j] += a;
-                } else {  // T'
-                    slack[j] -= a;
-                }
-            }
-            for (int j = 0; j < n; j++) {
-                if (!visy[j] && slack[j] == 0 && check(j)) {
-                    return;
-                }
-            }
-        }
-    }
-
-    void solve() {
-        // 初始顶标
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                lx[i] = max(lx[i], g[i][j]);
-            }
+                for (int j = 0; j <= m; ++j)
+                    if (used[j])
+                        u[p[j]] += delta, v[j] -= delta;
+                    else
+                        minv[j] -= delta;
+                j0 = j1;
+            } while (p[j0] != 0);
+            do {
+                int j1 = way[j0];
+                p[j0] = p[j1];
+                j0 = j1;
+            } while (j0);
         }
 
-        for (int i = 0; i < n; i++) {
-            fill(slack.begin(), slack.end(), inf);
-            fill(visx.begin(), visx.end(), false);
-            fill(visy.begin(), visy.end(), false);
-            bfs(i);
-        }
+        // vector<pair<int, int>> result;
+        // for (int i = 1; i <= m; ++i) {
+        //     result.push_back(make_pair(p[i], i));
+        // }
 
-        // custom
-        for (int i = 0; i < n; i++) {
-            if (g[i][matchx[i]] > 0) {
-                res += g[i][matchx[i]];
-            } else {
-                matchx[i] = -1;
-            }
-        }
-        cout << res << "\n";
-        for (int i = 0; i < org_n; i++) {
-            cout << matchx[i] + 1 << " ";
-        }
-        cout << "\n";
+        int C = -v[0];
+        return C;
     }
 };
