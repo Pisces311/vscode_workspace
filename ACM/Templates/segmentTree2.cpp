@@ -1,12 +1,14 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node {
-    int val, lazy, ls, rs;
-};
-
 // query for the range sum
+template <typename T = int, int mn = 0, int mx = 100000>
 class segmentTree {
+    struct Node {
+        T val, lazy;
+        int ls, rs;
+    };
+
     int cnt;
     vector<Node> tr;
 
@@ -30,16 +32,16 @@ class segmentTree {
    public:
     segmentTree() : tr(1), cnt(0) { tr.reserve(500000); }
 
-    int query(int o, int l, int r, int ql, int qr) {
+    T query(int ql, int qr, int o = 0, int l = mn, int r = mx) {
         if (r < ql || qr < l) return 0;
         if (ql <= l && r <= qr) return tr[o].val;
         pushDown(o, l, r);
         int mid = (l + r) >> 1;
-        return query(tr[o].ls, l, mid, ql, qr) +
-               query(tr[o].rs, mid + 1, r, ql, qr);
+        return query(ql, qr, tr[o].ls, l, mid) +
+               query(ql, qr, tr[o].rs, mid + 1, r);
     }
 
-    void update(int o, int l, int r, int ql, int qr, int k) {
+    void update(int ql, int qr, T k, int o = 0, int l = mn, int r = mx) {
         if (r < ql || qr < l) return;
         if (ql <= l && r <= qr) {
             tr[o].lazy += k;
@@ -48,8 +50,8 @@ class segmentTree {
         }
         pushDown(o, l, r);
         int mid = (l + r) >> 1;
-        update(tr[o].ls, l, mid, ql, qr, k);
-        update(tr[o].rs, mid + 1, r, ql, qr, k);
+        update(ql, qr, k, tr[o].ls, l, mid);
+        update(ql, qr, k, tr[o].rs, mid + 1, r);
         pushUp(o, l, r);
     }
 };
